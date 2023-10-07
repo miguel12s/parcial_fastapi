@@ -11,7 +11,16 @@ class Faculty(BaseModel):
     id:int
     facultad:str
 
-class typeDocument(BaseModel):
+class TypeDocument(BaseModel):
     id:int
-    typeDocument:str
+    tipo_documento:str
+
+class Sede(BaseModel):
+    id:int
+    sede:str
+
+
+class Capacidad(BaseModel):
+    id:int
+    capacidad:int
 
