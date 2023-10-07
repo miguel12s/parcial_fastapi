@@ -1,0 +1,8 @@
+###
+GET  http://127.0.0.1:8000/
+Content-Type: application/json
+
+
+### Obtener todas las facultades
+GET http://127.0.0.1:8000/facultades
+Content-Type: application/json
