@@ -1,6 +1,16 @@
 from fastapi import FastAPI
-from routes.user_routes import router as user_router
-from routes.admin_routes import router as admin_router
+from routes.campoad import campoad
+from routes.capacidad import capacidad
+from routes.facultad import facultad
+from routes.materia import materia
+from routes.programa import programa
+from routes.programaxfacultad import programaxfacultad
+from routes.rol import rol
+from routes.sede import sede
+from routes.tipodocumento import tipoDocumento
+from routes.tipoestado import tipoEstado
+from routes.tiporegistro import tipoRegistro
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -20,8 +30,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_router)
-app.include_router(admin_router)
+app.include_router(campoad)
+app.include_router(capacidad)
+app.include_router(facultad)
+app.include_router(materia)
+app.include_router(programa)
+app.include_router(programaxfacultad)
+app.include_router(rol)
+app.include_router(sede)
+app.include_router(tipoDocumento)
+app.include_router(tipoEstado)
+app.include_router(tipoRegistro)
 
 if __name__ == "__main__":
     import uvicorn
