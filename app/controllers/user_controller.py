@@ -6,16 +6,50 @@ from fastapi.encoders import jsonable_encoder
 
 class UserController:
         
-    def create_user(self, user: User):   
+    def create_user(self, user: User):
+
         try:
+            
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO usuarios (nombre,apellido,cedula,edad,usuario,contrasena) VALUES (%s, %s, %s, %s, %s ,%s)", (user.nombre, user.apellido, user.cedula, user.edad, user.usuario, user.contrasena))
+            cursor.execute("""SELECT 
+    t.id_tipo_documento,
+    f.id_facultad
+FROM 
+    tipos_documento AS t 
+JOIN 
+    facultades AS f ON f.facultad =%s
+where t.tipo_documento=%s;
+
+
+""",(user.facultad,user.tipo_documento,))
+            result=cursor.fetchone()
+            print(result)
+
+
+            cursor.execute("""
+INSERT INTO usuarios (id_rol, id_estado, nombres, apellidos, id_tipo_documento, numero_documento, celular, id_facultad, foto, correo, contraseña)
+values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+
+
+
+""",(user.id_rol,4,user.nombre,user.apellido,result[0],user.numero_documento,user.celular,result[1],user.foto,user.correo,user.contraseña))
+            
+            id_user=cursor.lastrowid
+
+            conn.commit()
+
+            cursor.execute('insert into camposxusuario (id_usuario,id_campo,dato) values(%s,%s,%s)',(id_user,1,user.facultad))
             conn.commit()
             conn.close()
+
+
+
+
             return {"resultado": "Usuario creado"}
         except mysql.connector.Error as err:
             conn.rollback()
+            print(err)
         finally:
             conn.close()
         
@@ -24,19 +58,25 @@ class UserController:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM usuarios WHERE id = %s", (user_id,))
+            cursor.execute("SELECT id_usuario,nombres,apellidos,numero_documento,foto,f.facultad,td.tipo_documento,celular,correo,contraseña,txe.estado,r.rol FROM usuarios u join tipos_documento td on u.id_tipo_documento=td.id_tipo_documento join facultades f on u.id_facultad=f.id_facultad join tipoxestado txe on txe.id_tipoestado=u.id_estado join roles r on r.id_rol=u.id_rol where id_usuario=%s", (user_id,))
             result = cursor.fetchone()
+            print(result)
             payload = []
             content = {} 
             
             content={
-                    'id':int(result[0]),
+                 'id':result[0],
                     'nombre':result[1],
                     'apellido':result[2],
-                    'cedula':result[3],
-                    'edad':int(result[4]),
-                    'usuario':result[5],
-                    'contrasena':result[6]
+                    'numero_documento':result[3],
+                    'foto':result[4],
+                    'facultad':result[5],
+                    'tipo_documento':result[6],
+                    'celular':result[7],
+                    'correo':result[8],
+                    'contraseña':result[9],
+                    'id_estado':result[10],
+                    'id_rol':result[11]  
             }
             payload.append(content)
             
@@ -55,18 +95,28 @@ class UserController:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM usuarios")
+            cursor.execute("SELECT id_usuario,nombres,apellidos,numero_documento,foto,f.facultad,td.tipo_documento,celular,correo,contraseña,txe.estado,r.rol FROM usuarios u join tipos_documento td on u.id_tipo_documento=td.id_tipo_documento join facultades f on u.id_facultad=f.id_facultad join tipoxestado txe on txe.id_tipoestado=u.id_estado join roles r on r.id_rol=u.id_rol")
             result = cursor.fetchall()
             payload = []
             content = {} 
             for data in result:
                 content={
                     'id':data[0],
+                    'id_rol':data[11],
+                    'id_estado':data[10],
                     'nombre':data[1],
-                    'cedula':data[2],
-                    'edad':data[3],
-                    'usuario':data[4],
-                    'contrasena':data[5]
+                    'apellido':data[2],
+                    'tipo_documento':data[6],
+
+                    'numero_documento':data[3],
+                    'celular':data[7],
+                    'facultad':data[5],
+
+                    'foto':data[4],
+                    
+                    'correo':data[8],
+                    'contraseña':data[9],
+                    
                 }
                 payload.append(content)
                 content = {}
@@ -80,6 +130,20 @@ class UserController:
             conn.rollback()
         finally:
             conn.close()
+    def delete_user(self,id_user:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("delete from usuarios where id_usuario=%s",(int(id_user),))
+            conn.commit()
+            conn.close()
+            return {"success":"usuario eliminado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+        finally:
+            conn.close()
+
     
     
        

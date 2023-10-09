@@ -1,13 +1,17 @@
 from pydantic import BaseModel
-from typing import Optional
 
 class User(BaseModel):
     id: int
+    id_rol:str
+    id_estado:str
     nombre: str
     apellido: str
-    cedula: str
-    edad: int
-    usuario: str
-    contrasena: str
+    tipo_documento:str
+    numero_documento: str
+    celular: str
+    facultad:str
+    foto:str
+    correo:str
+    contraseña:str
 
 

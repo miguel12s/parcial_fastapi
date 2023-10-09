@@ -10,7 +10,8 @@ from routes.sede import sede
 from routes.tipodocumento import tipoDocumento
 from routes.tipoestado import tipoEstado
 from routes.tiporegistro import tipoRegistro
-
+from routes.tipoxestado import tipoxestado
+from routes.user_routes import router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -41,7 +42,8 @@ app.include_router(sede)
 app.include_router(tipoDocumento)
 app.include_router(tipoEstado)
 app.include_router(tipoRegistro)
-
+app.include_router(tipoxestado)
+app.include_router(router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
