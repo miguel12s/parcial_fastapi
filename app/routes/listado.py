@@ -9,8 +9,8 @@ nueva_listado=ListadoController()
 
 @listado.post('/listado',status_code=201)
 
-async def createListado(horario:ListadoEstudiante):
-        rpta=nueva_listado.createListado(horario)  
+async def createListado(listado:ListadoEstudiante):
+        rpta=nueva_listado.createListado(listado)  
         return rpta
 
 @listado.get('/listado',response_model=List[ListadoEstudiante])
@@ -22,7 +22,7 @@ async def getListados():
 
 @listado.get('/listado/{id}',response_model=ListadoEstudiante)
 
-async def getListado(id_capacidad):
+async def getListado(id):
         rpta=nueva_listado.getListado(id)  
         return rpta
 

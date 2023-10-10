@@ -3,7 +3,6 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.Horario import Horario
 from fastapi.encoders import jsonable_encoder
-from datetime import date
 class HorarioController:
     def getHorario(self,id):
         try:
@@ -153,7 +152,7 @@ WHERE id_tutoria = %s
             
             
             
-            pass
+            
 
 
 

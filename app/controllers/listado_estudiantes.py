@@ -11,20 +11,20 @@ class ListadoController:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hora,ra.ubicacion_actividad FROM registro_actividad ra join tipo_registro_actividad tra on tra.id_tipo_actividad=ra.id_tipo_actividad where ra.id_registro_actividad=%s
+               SELECT * FROM `lista_estudiantes` WHERE id_lista=%s
+ 
 """, (id,))
-            result = cursor.fetchone()
-            if result:
+            data = cursor.fetchone()
+            if data:
                 payload = []
                 content = {}
 
                 content = {
-                   'id': result[0],
-                    'tipo_actividad': result[1],
-                    'id_usuario':result[2],
-                    'fecha':result[3],
-                    'hora':result[4],
-                    'ubicacion_actividad':result[5]
+                    'id': data[0],
+                    'id_horario': data[1],
+                    'id_usuario':data[2],
+                    'comentario':data[3],
+                    'asistencia':str(data[4]),
                 }
                 payload.append(content)
 
@@ -32,7 +32,7 @@ class ListadoController:
                 return json_data
             else:
                 raise HTTPException(
-                    status_code=404, detail="programa not found")
+                    status_code=404, detail="listado not found")
 
         except mysql.connector.Error as err:
             conn.rollback()
@@ -43,7 +43,7 @@ class ListadoController:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("""
-SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hora,ra.ubicacion_actividad FROM registro_actividad ra join tipo_registro_actividad tra on tra.id_tipo_actividad=ra.id_tipo_actividad
+SELECT * FROM `lista_estudiantes` WHERE 1
 """)
             result = cursor.fetchall()
             print(result)
@@ -52,11 +52,10 @@ SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hor
             for data in result:
                 content = {
                     'id': data[0],
-                    'tipo_actividad': data[1],
+                    'id_horario': data[1],
                     'id_usuario':data[2],
-                    'fecha':data[3],
-                    'hora':data[4],
-                    'ubicacion_actividad':data[5]
+                    'comentario':data[3],
+                    'asistencia':str(data[4]),
                    
 
                 }
@@ -68,18 +67,74 @@ SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hor
                 return {"resultado": json_data}
             else:
                 raise HTTPException(
-                    status_code=404, detail="facultadxprograma not found")
+                    status_code=404, detail="listado de estudiante not found")
 
         except mysql.connector.Error as err:
             conn.rollback()
         finally:
             conn.close()
         
-        def createListado(self,listado:ListadoEstudiante):
-            pass
-        def updateListado(self,listado:ListadoEstudiante,id:int):
-            pass
-        def deleteListado(self,id:int):
+    def createListado(self,listado:ListadoEstudiante):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            asistencia:int= 1 if listado.asistencia=="asistio"  else 0
+            print(asistencia)
+            cursor.execute(
+                "INSERT INTO lista_estudiantes (id_tutoria,id_usuario,comentario,asistencia) VALUES (%s,%s,%s,%s)", (listado.id_horario,listado.id_usuario,listado.comentario,asistencia,))
+            conn.commit()
+            conn.close()
+            return {"resultado": "lista de estudiantes  creada"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return ({"error": "la lista de estudiantes  ya existe en el programa"})
+        finally:
+            conn.close()     
+
+
+
+    def updateListado(self,listado:ListadoEstudiante,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            
+
+            print(id)
+            cursor.execute("""
+UPDATE lista_estudiantes
+SET comentario=%s,asistencia=%s
+WHERE id_lista = %s
+""", (listado.comentario,listado.asistencia,id,))
+            
+
+            
+            conn.commit()
+            conn.close()
+
+
+
+
+            return {"resultado": "lista  actualizado"}
+        except mysql.connector.Error as err:
+            conn.rollback()
+            print(err)
+        finally:
+            conn.close()
+    def deleteListado(self,id:int):
+            try:
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute("delete from lista_estudiantes where id_lista=%s",(id,))
+                conn.commit()
+                conn.close()
+                return {"success":"lista de estudiantes eliminado"}
+            except mysql.connector.Error as err:
+                print(err)
+                conn.rollback()
+            finally:
+                conn.close()
             pass
     # def createHorario(self,horario:Horario):
     #     try:
