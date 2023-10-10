@@ -13,7 +13,7 @@ from routes.tiporegistro import tipoRegistro
 from routes.tipoxestado import tipoxestado
 from routes.user_routes import router
 from routes.salones import salones
-
+from routes.campoxusuario import campoxusuario
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -32,6 +32,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(campoxusuario)
 
 app.include_router(campoad)
 app.include_router(capacidad)
@@ -47,7 +48,6 @@ app.include_router(tipoRegistro)
 app.include_router(tipoxestado)
 app.include_router(router)
 app.include_router(salones)
-
 
 if __name__ == "__main__":
     import uvicorn

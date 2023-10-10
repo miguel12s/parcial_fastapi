@@ -5,5 +5,5 @@ def get_db_connection():
         host="localhost",
         user="root",
         password="",
-        database="tutobq"
+        database="bd_tutobq"
     )
