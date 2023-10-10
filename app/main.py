@@ -14,6 +14,10 @@ from routes.tipoxestado import tipoxestado
 from routes.user_routes import router
 from routes.salones import salones
 from routes.campoxusuario import campoxusuario
+from routes.moduloxrol import moduloxrol
+from routes.registroActividad import registro_actividad
+from routes.horario import horario
+from routes.listado import listado
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -48,7 +52,10 @@ app.include_router(tipoRegistro)
 app.include_router(tipoxestado)
 app.include_router(router)
 app.include_router(salones)
-
+app.include_router(moduloxrol)
+app.include_router(registro_actividad)
+app.include_router(horario)
+app.include_router(listado)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
