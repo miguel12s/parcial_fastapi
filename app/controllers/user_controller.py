@@ -143,7 +143,49 @@ values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             conn.rollback()
         finally:
             conn.close()
+    def update_user(self,user:User,id_user:int):
+        try:
+            
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""SELECT 
+          t.id_tipo_documento,
+         f.id_facultad
+         FROM 
+        tipos_documento AS t 
+JOIN 
+    facultades AS f ON f.facultad =%s
+where t.tipo_documento=%s;
 
+
+""",(user.facultad,user.tipo_documento,))
+            result=cursor.fetchone()
+            print(result)
+
+
+            cursor.execute("""
+update usuarios set id_rol=%s, id_estado=%s, nombres=%s, apellidos=%s, id_tipo_documento=%s, numero_documento=%s, celular=%s, id_facultad=%s, foto=%s, correo=%s, contraseña=%s where id_usuario=%s
+
+
+
+
+""",(user.id_rol,4,user.nombre,user.apellido,result[0],user.numero_documento,user.celular,result[1],user.foto,user.correo,user.contraseña,id_user,))
+            
+
+            conn.commit()
+            cursor.execute('update camposxusuario set dato=%s where id_usuario=%s',(user.facultad,id_user))
+            conn.commit()
+            conn.close()
+
+
+
+
+            return {"resultado": "Usuario actualizado"}
+        except mysql.connector.Error as err:
+            conn.rollback()
+            print(err)
+        finally:
+            conn.close()
     
     
        
