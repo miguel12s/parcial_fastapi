@@ -44,7 +44,7 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
             return {"resultado": "Usuario creado"}
         except mysql.connector.Error as err:
             conn.rollback()
-            print(err)
+            return {"error":err}
         finally:
             conn.close()
         
