@@ -18,7 +18,7 @@ async def get_faculty(id_faculty: int):
     rpta = nueva_facultad.get_faculty(id_faculty)
     return rpta
 
-@facultad.get("/facultades",response_model=List[Faculty])
+@facultad.get("/facultades")
 async def get_faculties():
     rpta = nueva_facultad.get_faculties()
-    return rpta['resultado']
+    return rpta

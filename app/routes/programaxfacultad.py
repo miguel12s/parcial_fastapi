@@ -14,10 +14,10 @@ def getFacultadxProgramas():
       rpta=nueva_programaxfacultad.getFacultadxProgramas()
       return rpta['resultado']
 
-@programaxfacultad.get('/facultadxprograma/{id_fxp}',response_model=ProgramxFacultad)
+@programaxfacultad.get('/facultadxprograma/{id_facultad}')
 
-def getFacultadxPrograma(id_fxp):
-      rpta=nueva_programaxfacultad.getFacultadxPrograma(id_fxp)
+def getFacultadxPrograma(id_facultad:int):
+      rpta=nueva_programaxfacultad.getFacultadxPrograma(id_facultad)
       return rpta
 
 @programaxfacultad.post('/facultadxprograma')

@@ -39,30 +39,32 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
             conn.rollback()
         finally:
             conn.close()
-    def getFacultadxPrograma(self,id_fxp:int):
+    def getFacultadxPrograma(self,id_facultad:int):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                """select  fp.id_fxp, f.facultad,p.programa from facultadxprograma fp join facultades f on fp.id_facultad=f.id_facultad join programas p on fp.id_programa=p.id_programa where id_fxp=%s
-""", (id_fxp,))
-            result = cursor.fetchone()
-            if result:
-                payload = []
-                content = {}
-
+                """SELECT id_fxp,p.programa FROM facultadxprograma fxp join programas p on fxp.id_programa=p.id_programa join facultades f  on f.id_facultad=fxp.id_facultad where fxp.id_facultad=%s
+""", (id_facultad,))
+            result = cursor.fetchall()
+            print(result)
+            payload = []
+            content = {}
+            for data in result:
                 content = {
-                    'id': int(result[0]),
-                    'facultad': result[1],
-                    'programa':result[2]
+                    'id': data[0],
+                    'programa': data[1],                   
+
                 }
                 payload.append(content)
-
-                json_data = jsonable_encoder(content)
-                return json_data
+                content = {}
+            json_data = jsonable_encoder(payload)
+            print(json_data)
+            if result:
+                return {"resultado": json_data}
             else:
                 raise HTTPException(
-                    status_code=404, detail="programa not found")
+                    status_code=404, detail="facultadxprograma not found")
 
         except mysql.connector.Error as err:
             conn.rollback()

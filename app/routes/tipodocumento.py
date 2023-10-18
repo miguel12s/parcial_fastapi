@@ -14,11 +14,11 @@ async def getTypeDocument(id_type_document):
     return rpta
 
 
-@tipoDocumento.get('/tipoDocumento',response_model=List[TypeDocument])
+@tipoDocumento.get('/tipoDocumento')
 
 async def getTypesDocuments():
     rpta=nuevo_tipoDocumento.getTypesDocuments()
-    return rpta['resultado']
+    return rpta
 
 
 
