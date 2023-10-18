@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.user_model import User
 from fastapi.encoders import jsonable_encoder
-
+from utils.utils import Hasher
 class UserController:
         
     def create_user(self, user: User):
@@ -12,36 +12,31 @@ class UserController:
             
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("""SELECT 
-    t.id_tipo_documento,
-    f.id_facultad
-FROM 
-    tipos_documento AS t 
-JOIN 
-    facultades AS f ON f.facultad =%s
-where t.tipo_documento=%s;
-
-
-""",(user.facultad,user.tipo_documento,))
-            result=cursor.fetchone()
-            print(result)
 
 
             cursor.execute("""
-INSERT INTO usuarios (id_rol, id_estado, nombres, apellidos, id_tipo_documento, numero_documento, celular, id_facultad, foto, correo, contraseña)
-values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+INSERT INTO usuarios (id_rol, id_estado, nombres, apellidos, id_tipo_documento, numero_documento, celular,  correo, contraseña)
+values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
 
 
 
-""",(user.id_rol,4,user.nombre,user.apellido,result[0],user.numero_documento,user.celular,result[1],user.foto,user.correo,user.contraseña))
+""",(user.id_rol,4,user.nombres,user.apellidos,user.id_tipo_documento,user.numero_documento,user.celular,user.correo,Hasher.get_password_hash(user.contraseña),))
             
             id_user=cursor.lastrowid
-
             conn.commit()
 
-            cursor.execute('insert into camposxusuario (id_usuario,id_campo,dato) values(%s,%s,%s)',(id_user,1,user.facultad))
+            cursor.execute('insert into camposxusuario (id_usuario,id_campo,dato) values(%s,%s,%s)',(id_user,1,str(user.id_programa)))
+            conn.commit()
+            cursor.execute("""SELECT fxp.id_fxp FROM `facultadxprograma` fxp join facultades f on fxp.id_facultad=f.id_facultad join programas p on fxp.id_programa=p.id_programa
+
+where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facultad))
+            id_fxp=cursor.fetchone()[0]
+
+            cursor.execute('INSERT INTO `fpxusuario`(`id_fxp`, `id_usuario`) VALUES (%s,%s)',(id_fxp,id_user))
             conn.commit()
             conn.close()
+
+
 
 
 

@@ -1,17 +1,17 @@
-from pydantic import BaseModel
-
+from pydantic import BaseModel,EmailStr
 class User(BaseModel):
-    id: int
-    id_rol:str
-    id_estado:str
-    nombre: str
-    apellido: str
-    tipo_documento:str
-    numero_documento: str
+    id: int=None
+    id_rol:int
+    id_estado:int
+    nombres: str
+    apellidos: str
+    id_tipo_documento:int
+    numero_documento:int
     celular: str
-    facultad:str
-    foto:str
-    correo:str
+    id_facultad:int
+    id_programa:int
+    foto:str=None
+    correo:EmailStr
     contraseña:str
 
 
