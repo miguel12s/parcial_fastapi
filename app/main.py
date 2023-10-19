@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routes.estadisticas import estadistica
 from routes.campoad import campoad
 from routes.capacidad import capacidad
 from routes.facultad import facultad
@@ -18,7 +20,7 @@ from routes.moduloxrol import moduloxrol
 from routes.registroActividad import registro_actividad
 from routes.horario import horario
 from routes.listado import listado
-from fastapi.middleware.cors import CORSMiddleware
+from routes.auth import auth
 
 app = FastAPI()
 
@@ -56,6 +58,8 @@ app.include_router(moduloxrol)
 app.include_router(registro_actividad)
 app.include_router(horario)
 app.include_router(listado)
+app.include_router(auth)
+app.include_router(estadistica)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

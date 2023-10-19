@@ -53,7 +53,10 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT id_usuario,nombres,apellidos,numero_documento,foto,f.facultad,td.tipo_documento,celular,correo,contraseña,txe.estado,r.rol FROM usuarios u join tipos_documento td on u.id_tipo_documento=td.id_tipo_documento join facultades f on u.id_facultad=f.id_facultad join tipoxestado txe on txe.id_tipoestado=u.id_estado join roles r on r.id_rol=u.id_rol where id_usuario=%s", (user_id,))
+            # select u.id_usuario,u.nombres,u.apellidos,td.tipo_documento,f.facultad, u.numero_documento,u.celular,u.foto,u.correo,u.contraseña from  usuarios u join tipos_documento td on u.id_tipo_documento=td.id_tipo_documento   join facultades f on f.id_facultad=fxp.id_facultad  join facultadxprograma fxp on fxp.id_facultad=7 join fpxusuario  fpx on fpx.id_usuario=u.id_usuario    WHERE u.id_usuario=11
+            sql="SELECT  u.id_usuario,u.nombres,u.apellidos,t.tipo_documento,  u.numero_documento,f.facultad,p.programa,u.celular,u.foto,u.correo,u.contraseña FROM `usuarios` u  join tipos_documento t on u.id_tipo_documento=t.id_tipo_documento join fpxusuario facusu on facusu.id_usuario=u.id_usuario     join facultadxprograma fxp on fxp.id_fxp=facusu.id_fxp join facultades f on f.id_facultad=fxp.id_facultad join programas p on p.id_programa=fxp.id_programa   WHERE u.id_usuario=%s"
+            cursor.execute(sql, (user_id,))
+            print(sql)
             result = cursor.fetchone()
             print(result)
             payload = []
@@ -63,19 +66,21 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
                  'id':result[0],
                     'nombre':result[1],
                     'apellido':result[2],
-                    'numero_documento':result[3],
-                    'foto':result[4],
+                    'tipo_documento':result[3],
+                    'numero_documento':result[4],
                     'facultad':result[5],
-                    'tipo_documento':result[6],
+                    'programa':result[6],
                     'celular':result[7],
-                    'correo':result[8],
-                    'contraseña':result[9],
-                    'id_estado':result[10],
-                    'id_rol':result[11]  
+                    'foto':result[8],
+                    'correo':result[9],
+                    'contraseña':result[10],
+                    # 'id_estado':result[10],
+                    # 'id_rol':result[11]  
             }
             payload.append(content)
             
-            json_data = jsonable_encoder(content)            
+            json_data = jsonable_encoder(content)  
+            print(json_data)          
             if result:
                return  json_data
             else:
@@ -90,27 +95,23 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT id_usuario,nombres,apellidos,numero_documento,foto,f.facultad,td.tipo_documento,celular,correo,contraseña,txe.estado,r.rol FROM usuarios u join tipos_documento td on u.id_tipo_documento=td.id_tipo_documento join facultades f on u.id_facultad=f.id_facultad join tipoxestado txe on txe.id_tipoestado=u.id_estado join roles r on r.id_rol=u.id_rol")
+            cursor.execute("SELECT  u.id_usuario,u.nombres,u.apellidos,t.tipo_documento,  u.numero_documento,f.facultad,p.programa,u.celular,u.foto,u.correo,u.contraseña FROM `usuarios` u  join tipos_documento t on u.id_tipo_documento=t.id_tipo_documento join fpxusuario facusu on facusu.id_usuario=u.id_usuario     join facultadxprograma fxp on fxp.id_fxp=facusu.id_fxp join facultades f on f.id_facultad=fxp.id_facultad join programas p on p.id_programa=fxp.id_programa")
             result = cursor.fetchall()
             payload = []
             content = {} 
             for data in result:
                 content={
                     'id':data[0],
-                    'id_rol':data[11],
-                    'id_estado':data[10],
                     'nombre':data[1],
                     'apellido':data[2],
-                    'tipo_documento':data[6],
-
-                    'numero_documento':data[3],
-                    'celular':data[7],
+                    'tipo_documento':data[3],
+                    'numero_documento':data[4],
                     'facultad':data[5],
-
-                    'foto':data[4],
-                    
-                    'correo':data[8],
-                    'contraseña':data[9],
+                    'programa':data[6],
+                    'celular':data[7],
+                    'foto':data[8],
+                    'correo':data[9],
+                    'contraseña':data[10],
                     
                 }
                 payload.append(content)
@@ -119,7 +120,7 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
             if result:
                return {"resultado": json_data}
             else:
-                raise HTTPException(status_code=404, detail="User not found")  
+                raise HTTPException(status_code=404, detail="Users not found")  
                 
         except mysql.connector.Error as err:
             conn.rollback()

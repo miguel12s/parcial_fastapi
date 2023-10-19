@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from controllers.user_controller import *
 from models.user_model import User
 from typing import List
-router = APIRouter()
+router = APIRouter(prefix="/user")
 
 nuevo_usuario = UserController()
 
@@ -14,15 +14,16 @@ async def create_user(user: User):
     return rpta
 
 
-@router.get("/get_user/{user_id}",response_model=User)
+@router.get("/get_user/{user_id}")
 async def get_user(user_id: int):
+    print(user_id)
     rpta = nuevo_usuario.get_user(user_id)
     return rpta
 
-@router.get("/get_users/",response_model=List[User])
+@router.get("/get_users")
 async def get_users():
     rpta = nuevo_usuario.get_users()
-    return rpta['resultado']
+    return rpta
 @router.delete("/user/{id}")
 
 async def deleteUser(id):
