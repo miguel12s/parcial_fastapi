@@ -13,13 +13,13 @@ def create_salones(salones:Salones):
       rpta=nuevo_salon.create_salones(salones)
       return rpta
 
-@salones.get('/salones',response_model=List[Salones])
+@salones.get('/salones')
 def get_salones():
       rpta=nuevo_salon.get_salones()
-      return rpta['resultado']
+      return rpta
 
 @salones.get('/salones/{id_salon}',response_model=Salones)
 
 def get_salones(id_salon):
-      rpta=nuevo_salon.get_salones(id_salon)
+      rpta=nuevo_salon.get_salonesid(id_salon)
       return rpta

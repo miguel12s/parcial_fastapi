@@ -12,7 +12,6 @@ class SalonesController:
             cursor.execute("""SELECT ds.id_salon, s.sede, c.capacidad, ds.salon FROM salones ds
             JOIN sedes s ON ds.id_sede = s.id_sede JOIN capacidades c ON ds.id_capacidad = c.id_capacidad;""")
             result = cursor.fetchall()
-            print(result)
             payload = []
             content = {}
             for data in result:
@@ -38,7 +37,7 @@ class SalonesController:
         finally:
             conn.close()
 
-    def get_salones(self,id_salon:int):
+    def get_salonesid(self,id_salon:int):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
