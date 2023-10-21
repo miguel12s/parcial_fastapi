@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from typing import List
+from fastapi import APIRouter,UploadFile
+from typing import Any, List
 from controllers.horario_controller import *
 from models.Horario import Horario
 horario=APIRouter()
@@ -20,7 +20,7 @@ async def getHorarios():
         return rpta['resultado']
 
 
-@horario.get('/horario/{id}',response_model=Horario)
+@horario.get('/horario/{id}')
 
 async def getHorario(id:int):
         rpta=nueva_horario.getHorario(id)  
@@ -36,6 +36,18 @@ async def updateHorario(horario:Horario,id:int):
 
 async def deleteHorario(id):
         rpta=nueva_horario.deleteHorario(id)
+        return rpta
+
+@horario.get('/horario-usuario/{id}')
+
+def horarioUsuario(id):
+        rpta=nueva_horario.getHorarioForIdUsuario(id)
+        return rpta
+
+@horario.post('/observacion/{id_usuario}')
+
+async def observacion(file:UploadFile,id_usuario): 
+        rpta=await nueva_horario.createObservacion(file,id_usuario)
         return rpta
         
 
