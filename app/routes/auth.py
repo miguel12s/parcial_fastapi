@@ -1,13 +1,10 @@
 from fastapi import APIRouter,Depends,HTTPException,status
-from datetime import datetime,timedelta
 from controllers.auth_controller import AuthController
 from models.LoginRequest import LoginRequest
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
-from jose import JWTError,jwt
+
 from pydantic import BaseModel
 from typing import Annotated
 from passlib.context import CryptContext
-from decouple import config
 from controllers.campoad_controller import *
 from utils.utils import Hasher
 from models.Token import Token,TokenData

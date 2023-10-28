@@ -90,13 +90,15 @@ SELECT ht.id_tutoria,f.facultad,p.programa,ma.materia,s.salon,ht.id_usuario,txe.
         
     def createHorario(self,horario:Horario):
         try:
+            print(horario)
             conn = get_db_connection()
             cursor = conn.cursor()
 
             cursor.execute("""
-select id_fxp from facultadxprograma fxp  where fxp.id_facultad=(select id_facultad from facultades f where f.facultad="facultad de artes") and fxp.id_programa=(select p.id_programa from programas p where p.programa="Diseño multimedial")
+select fpxm.id_fpxm from facultadxprograma fxp where fxp.id_facultad=%s
+and fxp.id_programa=%s 
 
-""")
+""",(horario.id_facultad,horario.id_programa))
             id_fxp=cursor.fetchone()[0]
             cursor.execute("""
 select mxr.id_mxr,txe.id_tipoestado,s.id_salon from moduloxrol mxr join tipoxestado txe on txe.estado=%s join salones s on s.salon=%s  where mxr.id_materia=(select m.id_materia from  materias m where m.materia=%s and mxr.id_tutoria=%s)
