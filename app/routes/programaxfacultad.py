@@ -14,9 +14,9 @@ def getFacultadxProgramas():
       rpta=nueva_programaxfacultad.getFacultadxProgramas()
       return rpta['resultado']
 
-@programaxfacultad.get('/facultadxprograma/{id_facultad}')
+@programaxfacultad.get('/facxpro/{id_facultad}')
 
-def getFacultadxPrograma(id_facultad:int):
+def getFacultadxPrograma(id_facultad:str):
       rpta=nueva_programaxfacultad.getFacultadxPrograma(id_facultad)
       return rpta
 
@@ -25,4 +25,6 @@ def getFacultadxPrograma(id_facultad:int):
 def createFacultadxPrograma(fxp:ProgramxFacultad):
       rpta=nueva_programaxfacultad.createFacultadxPrograma(fxp)
       return rpta
+
+
 

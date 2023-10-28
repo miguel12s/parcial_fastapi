@@ -4,6 +4,9 @@ from models.LoginRequest import LoginRequest
 from config.db_config import get_db_connection
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
+from utils.Security import Security
+
+
 class AuthController:
         
         def login(self,credentials:LoginRequest):
@@ -14,20 +17,15 @@ class AuthController:
 
                 cursor.execute("select contraseña from usuarios where correo=%s",(credentials.email,))
                 password_hashed_db=cursor.fetchone()[0]
-                print(password_hashed_db)
                 hash_verificated=Hasher.verify_password(credentials.password,password_hashed_db)
                 if(hash_verificated):
                     cursor.execute("select id_usuario,id_rol,id_estado from usuarios where correo=%s and contraseña=%s",(credentials.email,password_hashed_db))
                     data=cursor.fetchone()
-                    content={
-                        "id_usuario":data[0],
-                        "id_rol":data[1],
-                        "id_estado":data[2]
-                    }
+                    
                     if data:
-                           json_data=jsonable_encoder(content)
+                           json_data=jsonable_encoder(Security.generateToken(data[0]))
                            print(json_data)
-                           return json_data    
+                           return {"token":json_data,"id_rol":data[1],"id_estado":data[2],}  
                     else:
                         raise HTTPException(status_code=404, detail="User not found") 
                   
@@ -40,3 +38,4 @@ class AuthController:
                 return {"error":err}
             finally:
              conn.close()
+    

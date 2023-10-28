@@ -1,7 +1,8 @@
-from fastapi import APIRouter,UploadFile
+from fastapi import APIRouter, Request,UploadFile
 from typing import Any, List
 from controllers.horario_controller import *
 from models.Horario import Horario
+from utils.Security import Security
 horario=APIRouter()
 
 nueva_horario=HorarioController()
@@ -38,10 +39,14 @@ async def deleteHorario(id):
         rpta=nueva_horario.deleteHorario(id)
         return rpta
 
-@horario.get('/horario-usuario/{id}')
+@horario.get('/horario-usuario')
 
-def horarioUsuario(id):
-        rpta=nueva_horario.getHorarioForIdUsuario(id)
+async def horarioUsuario(request:Request):
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        id_usuario=payload['id_usuario']
+        print(id_usuario)
+        rpta=nueva_horario.getHorarioForIdUsuario(id_usuario)
         return rpta
 
 @horario.post('/observacion/{id_usuario}')

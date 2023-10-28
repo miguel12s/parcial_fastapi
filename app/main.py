@@ -21,7 +21,8 @@ from routes.registroActividad import registro_actividad
 from routes.horario import horario
 from routes.listado import listado
 from routes.auth import auth
-
+from routes.admin import admin
+from routes.materiaxprograma import materiaxprograma
 app = FastAPI()
 
 origins = [
@@ -60,6 +61,8 @@ app.include_router(horario)
 app.include_router(listado)
 app.include_router(auth)
 app.include_router(estadistica)
+app.include_router(admin)
+app.include_router(materiaxprograma)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Request
 from controllers.user_controller import *
 from models.user_model import User
 from typing import List
+from utils.Security import Security
 router = APIRouter(prefix="/user")
 
 nuevo_usuario = UserController()
@@ -14,8 +15,11 @@ async def create_user(user: User):
     return rpta
 
 
-@router.get("/get_user/{user_id}")
-async def get_user(user_id: int):
+@router.get("/get_user")
+async def get_user(request:Request):
+    headers=request.headers
+    payload=Security.verify_token(headers=headers)
+    user_id=payload['id_usuario']
     print(user_id)
     rpta = nuevo_usuario.get_user(user_id)
     return rpta
