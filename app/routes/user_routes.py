@@ -41,9 +41,8 @@ async def updateUser(user:User,id_user):
     return rpta
 
 @router.post('/multiple-users')
-async def createMultipleUsers(formdata):
+async def createMultipleUsers(formdata:UploadFile):
     try:
-        print(formdata)
         rpta=await nuevo_usuario.insertMultipleUsers(formdata)
         return rpta
     except Exception as e:

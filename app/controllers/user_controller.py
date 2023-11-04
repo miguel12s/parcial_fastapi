@@ -5,7 +5,12 @@ from config.db_config import get_db_connection
 from schemas.user_model import User
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
+from models.admin import ModelAdmin
 import pandas as pd
+
+
+modelAdmin=ModelAdmin()
+
 class UserController:
         
     def create_user(self, user: User):
@@ -184,26 +189,40 @@ update usuarios set id_rol=%s, id_estado=%s, nombres=%s, apellidos=%s, id_tipo_d
             print(err)
         finally:
             conn.close()
-    async def insertMultipleUsers(self,file):
-       
+    async def insertMultipleUsers(self, file: UploadFile):
      try:
-        ##falta validacion
-        content = await file.read()
-        print(content)
-        df = pd.read_excel(io.BytesIO(content))
-        
+        if not file.filename.endswith('.csv'):
+            raise HTTPException(status_code=422, detail="El archivo no es un CSV válido")
+
+        payload=[]
+        file_content=await file.read()
+        df = pd.read_csv(io.BytesIO(file_content),encoding='latin-1')
         # Procesa el DataFrame df, por ejemplo, imprime sus contenidos
-        print(df)
 
         for index, row in df.iterrows():
-            user_data = row
-            print(row)
-        
-        return {"message": "Archivo procesado correctamente"}
-     except Exception as e:
+            user_data = row.to_dict()
+            data=user_data['rol;nombre;apellido;tipodocumento;numerodocumento;celular;correo;password;facultad;programa'].split(';')
+            content={
+                "rol":data[0],
+                "nombre":data[1],
+                "apellido":data[2],
+                "tipo_documento":data[3],
+                "numero_documento":data[4],
+                "celular":data[5],
+                "correo":data[6],
+                "password":data[7],
+                "facultad":data[8],
+                "programa":data[9]
+            }
+            payload.append(content)
+            content={}
+        res= await ModelAdmin.createMultipleUsers(payload)
+        print(res)
+
+        return {"message": res}
+     except Exception as e: 
         print(e)
         raise HTTPException(status_code=400, detail="Error al procesar el archivo")
-
     
     
        
