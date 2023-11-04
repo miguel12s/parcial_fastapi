@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.tipoxestado_controller  import *
-from models.TipoxEstado import TipoxEstado
+from schemas.TipoxEstado import TipoxEstado
 
 tipoxestado=APIRouter()
 

@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.RegistroActividad import RegistroActividad
+from schemas.RegistroActividad import RegistroActividad
 from fastapi.encoders import jsonable_encoder
 
 class RegistroActividadController:

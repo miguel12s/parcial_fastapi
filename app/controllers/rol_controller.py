@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.Rol import Rol
+from schemas.Rol import Rol
 from fastapi.encoders import jsonable_encoder
 
 class RolController:

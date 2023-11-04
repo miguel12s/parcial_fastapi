@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.ProgramxFacultad import ProgramxFacultad
+from schemas.ProgramxFacultad import ProgramxFacultad
 from fastapi.encoders import jsonable_encoder
 
 

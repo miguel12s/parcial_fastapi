@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.materiaxprograma import *
-from models.FpxMateria import FpxMateria
+from schemas.FpxMateria import FpxMateria
 from controllers.materiaxprograma import *
 
 materiaxprograma=APIRouter()

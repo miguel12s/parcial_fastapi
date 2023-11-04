@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.Salones import Salones
+from schemas.Salones import Salones
 from fastapi.encoders import jsonable_encoder
 
 class SalonesController:

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.tipoestado import *
-from models.TipoEstado import TipoEstado
+from schemas.TipoEstado import TipoEstado
 
 tipoEstado=APIRouter()
 

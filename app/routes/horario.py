@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request,UploadFile
 from typing import Any, List
 from controllers.horario_controller import *
-from models.Horario import Horario
+from schemas.Horario import Horario
 from utils.Security import Security
 horario=APIRouter()
 
@@ -10,11 +10,14 @@ nueva_horario=HorarioController()
 
 @horario.post('/horario',status_code=201)
 
-async def createHorario(horario:Horario):
-        rpta=nueva_horario.createHorario(horario)  
+async def createHorario(horario:Horario,request:Request):
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        id_usuario=payload['id_usuario']
+        rpta=nueva_horario.createHorario(horario,id_usuario)  
         return rpta
 
-@horario.get('/horario',response_model=List[Horario])
+@horario.get('/horario')
 
 async def getHorarios():
         rpta=nueva_horario.getHorarios()  
@@ -45,15 +48,18 @@ async def horarioUsuario(request:Request):
         headers=request.headers
         payload=Security.verify_token(headers)
         id_usuario=payload['id_usuario']
-        print(id_usuario)
         rpta=nueva_horario.getHorarioForIdUsuario(id_usuario)
         return rpta
 
 @horario.post('/observacion/{id_usuario}')
 
-async def observacion(file:UploadFile,id_usuario): 
-        rpta=await nueva_horario.createObservacion(file,id_usuario)
-        return rpta
-        
+async def observacion(file:UploadFile,id_usuario):
+        try: 
+                rpta=await nueva_horario.createObservacion(file,id_usuario)
+                return rpta
+        except Exception as e:
+                print(e)
+                
+                
 
 

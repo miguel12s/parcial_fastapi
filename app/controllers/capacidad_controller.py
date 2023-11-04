@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.Capacidad import Capacidad
+from schemas.Capacidad import Capacidad
 from fastapi.encoders import jsonable_encoder
 
 class CapacidadController:

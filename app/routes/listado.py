@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.listado_estudiantes import *
-from models.ListadoEstudiante import ListadoEstudiante
+from schemas.ListadoEstudiante import ListadoEstudiante
 listado=APIRouter()
 
 nueva_listado=ListadoController()

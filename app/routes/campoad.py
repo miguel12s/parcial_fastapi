@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.campoad_controller import *
-from models.CampoAd import CampoAd
+from schemas.CampoAd import CampoAd
 
 campoad=APIRouter()
 

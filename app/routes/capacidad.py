@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.capacidad_controller import *
-from models.Capacidad import Capacidad
+from schemas.Capacidad import Capacidad
 capacidad=APIRouter()
 
 nueva_capacidad=CapacidadController()

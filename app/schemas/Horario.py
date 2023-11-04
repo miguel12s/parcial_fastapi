@@ -2,13 +2,13 @@ from pydantic import BaseModel
 from datetime import date
 class Horario(BaseModel):
     id:int=None
-    id_facultad:str
+    id_facultad:int
     id_programa:str
     id_materia:str
-    id_salon:str
-    id_capacidad:str
+    id_salon:int
+    id_capacidad:int
     id_sede:str
-    id_estado_tutoria:str
+    id_estado_tutoria:str="4"
     cupos:int
     tema:str
     fecha:date

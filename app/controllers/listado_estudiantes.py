@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.ListadoEstudiante import ListadoEstudiante
+from schemas.ListadoEstudiante import ListadoEstudiante
 from fastapi.encoders import jsonable_encoder
 
 class ListadoController:

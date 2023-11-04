@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from models.Notification import Notification
+from schemas.Notification import Notification
 from controllers.admin_controller import AdminController
 
 

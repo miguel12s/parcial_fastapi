@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.sede_controller import *
-from models.Sede import Sede
+from schemas.Sede import Sede
 sede=APIRouter()
 
 nueva_sede=SedeController()

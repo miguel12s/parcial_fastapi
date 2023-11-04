@@ -3,7 +3,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.FpxMateria import FpxMateria
+from schemas.FpxMateria import FpxMateria
 from fastapi.encoders import jsonable_encoder
 
 

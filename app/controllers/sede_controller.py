@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.Sede import Sede
+from schemas.Sede import Sede
 from fastapi.encoders import jsonable_encoder
 
 class SedeController:

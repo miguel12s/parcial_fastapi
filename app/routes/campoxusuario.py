@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.campoxusuario_controller import *
-from models.CampoxUsuario import CampoxUsuario
+from schemas.CampoxUsuario import CampoxUsuario
 campoxusuario=APIRouter()
 
 nueva_campoxusuario=CampoxUsuarioController()

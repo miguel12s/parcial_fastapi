@@ -1,9 +1,11 @@
+import io
 import mysql.connector
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from config.db_config import get_db_connection
-from models.user_model import User
+from schemas.user_model import User
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
+import pandas as pd
 class UserController:
         
     def create_user(self, user: User):
@@ -182,6 +184,26 @@ update usuarios set id_rol=%s, id_estado=%s, nombres=%s, apellidos=%s, id_tipo_d
             print(err)
         finally:
             conn.close()
+    async def insertMultipleUsers(self,file):
+       
+     try:
+        ##falta validacion
+        content = await file.read()
+        print(content)
+        df = pd.read_excel(io.BytesIO(content))
+        
+        # Procesa el DataFrame df, por ejemplo, imprime sus contenidos
+        print(df)
+
+        for index, row in df.iterrows():
+            user_data = row
+            print(row)
+        
+        return {"message": "Archivo procesado correctamente"}
+     except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail="Error al procesar el archivo")
+
     
     
        

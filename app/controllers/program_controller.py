@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from models.Program import Program
+from schemas.Program import Program
 from fastapi.encoders import jsonable_encoder
 
 class ProgramaController:

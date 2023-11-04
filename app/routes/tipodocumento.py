@@ -1,7 +1,6 @@
 from fastapi import APIRouter
-from typing import List
 from controllers.tipodocumento import *
-from models.TypeDocument import TypeDocument
+from schemas.TypeDocument import TypeDocument
 tipoDocumento=APIRouter()
 
 nuevo_tipoDocumento=TipoDocumentoController()

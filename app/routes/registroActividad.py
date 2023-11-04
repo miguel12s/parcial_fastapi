@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.registro_actividad import *
-from models.RegistroActividad import RegistroActividad
+from schemas.RegistroActividad import RegistroActividad
 
 registro_actividad=APIRouter()
 

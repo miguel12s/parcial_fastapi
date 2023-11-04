@@ -1,7 +1,6 @@
 from fastapi import APIRouter
-from typing import List
 from controllers.salones_controller import *
-from models.Salones import Salones
+from schemas.Salones import Salones
 
 salones=APIRouter()
 

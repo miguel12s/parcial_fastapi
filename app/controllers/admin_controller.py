@@ -1,5 +1,5 @@
 import mysql.connector
-from models.Notification import Notification
+from schemas.Notification import Notification
 from config.db_config import get_db_connection
 from fastapi.encoders import jsonable_encoder
 
@@ -21,3 +21,4 @@ class AdminController:
             return ({"error": "ocurrio un error al realizar la consulta"})
          finally:
             conn.close()
+      

@@ -2,19 +2,34 @@ from typing import Any
 import mysql.connector
 from fastapi import HTTPException, UploadFile
 from config.db_config import get_db_connection
-from models.Horario import Horario
+from schemas.Horario import Horario
 from fastapi.encoders import jsonable_encoder
+from models.docente import ModelDocente
+
+success="el horario ha sido creado"
+
+
 class HorarioController:
     def getHorario(self,id):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            sql="""
-               SELECT ht.id_tutoria,f.facultad,p.programa,s.salon,ht.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final  FROM `horario_tutorias` ht join salones s on ht.id_salon=s.id_salon join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado join facultadxprograma fxp on ht.id_fxp=fxp.id_fxp join facultades f on fxp.id_facultad=f.id_facultad join programas p on fxp.id_programa=p.id_programa where id_usuario=%s
-"""
-            cursor.execute(sql, (id,))
-            print(sql)
+            
+            cursor.execute("""
+              SELECT ht.id_tutoria,f.facultad,p.programa,m.materia ,s.salon,ht.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final,se.sede  FROM `horario_tutorias` ht 
+join salones s on ht.id_salon=s.id_salon
+join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado 
+join fpxmateria fpxm on fpxm.id_fpxm=ht.id_fpxm
+join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp
+join facultades f on f.id_facultad=fxp.id_facultad
+join programas p on p.id_programa=fxp.id_programa
+join materias m on m.id_materia=fpxm.id_materia
+join sedes se on se.id_sede=s.id_sede
+where txe.id_tipoxestado=6 and ht.id_tutoria=%s
+""",(id,))
+           
             data = cursor.fetchone()
+            print(data)
             if data:
                 payload = []
                 content = {}
@@ -23,19 +38,20 @@ class HorarioController:
                    'id':data[0],
                        'facultad':data[1],
                        'programa':data[2],
-                       'salon':data[3],
-                       'id_usuario':data[4],
-                       'estado_tutoria':data[5],
-                       'cupos':data[6],
-                       'tema':data[7],
-                       'fecha':data[8],
-                       'hora_inicial':data[9],
-                       'hora_final':data[10]
+                       'materia':data[3],
+                       'salon':data[4],
+                       'id_usuario':data[5],
+                       'estado_tutoria':data[6],
+                       'cupos':data[7],
+                       'tema':data[8],
+                       'fecha':data[9],
+                       'hora_inicial':data[10],
+                       'hora_final':data[11],
+                       'sede':data[12]
                 }
-                payload.append(content)
+                
 
-                json_data = jsonable_encoder(payload)
-                print(json_data)
+                json_data = jsonable_encoder(content)
                 return json_data
             else:
                 raise HTTPException(
@@ -51,7 +67,16 @@ class HorarioController:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("""
-SELECT ht.id_tutoria,f.facultad,p.programa,ma.materia,s.salon,ht.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final  FROM `horario_tutorias` ht join salones s on ht.id_salon=s.id_salon join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado join facultadxprograma fxp on ht.id_fxp=fxp.id_fxp join facultades f on fxp.id_facultad=f.id_facultad join programas p on fxp.id_programa=p.id_programa join moduloxrol mxr on ht.id_mxr=mxr.id_mxr join materias ma on mxr.id_materia=ma.id_materia
+SELECT ht.id_tutoria,f.facultad,p.programa,m.materia ,s.salon,ht.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final,u.nombres,u.apellidos  FROM `horario_tutorias` ht 
+join salones s on ht.id_salon=s.id_salon
+join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado 
+join fpxmateria fpxm on fpxm.id_fpxm=ht.id_fpxm
+join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp
+join facultades f on f.id_facultad=fxp.id_facultad
+join programas p on p.id_programa=fxp.id_programa
+join materias m on m.id_materia=fpxm.id_materia
+join usuarios u on u.id_usuario=ht.id_usuario
+where txe.id_tipoxestado=6
 """)
             result = cursor.fetchall()
             print(result)
@@ -69,7 +94,9 @@ SELECT ht.id_tutoria,f.facultad,p.programa,ma.materia,s.salon,ht.id_usuario,txe.
                        'tema':data[8],
                        'fecha':data[9],
                        'hora_inicial':data[10],
-                       'hora_final':data[11]
+                       'hora_final':data[11],
+                       'nombres':data[12],
+                       'apellidos':data[13]
                     
 
                 }
@@ -88,31 +115,38 @@ SELECT ht.id_tutoria,f.facultad,p.programa,ma.materia,s.salon,ht.id_usuario,txe.
         finally:
             conn.close()
         
-    def createHorario(self,horario:Horario):
+    def createHorario(self,horario:Horario,id_usuario:int):
         try:
-            print(horario)
+
             conn = get_db_connection()
             cursor = conn.cursor()
 
             cursor.execute("""
-select fpxm.id_fpxm from facultadxprograma fxp where fxp.id_facultad=%s
-and fxp.id_programa=%s 
+select fpxm.id_fpxm from fpxmateria fpxm join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp 
+where fpxm.id_materia=%s and fxp.id_facultad=%s and fxp.id_programa=%s
 
-""",(horario.id_facultad,horario.id_programa))
-            id_fxp=cursor.fetchone()[0]
-            cursor.execute("""
-select mxr.id_mxr,txe.id_tipoestado,s.id_salon from moduloxrol mxr join tipoxestado txe on txe.estado=%s join salones s on s.salon=%s  where mxr.id_materia=(select m.id_materia from  materias m where m.materia=%s and mxr.id_tutoria=%s)
-""",(horario.estado_tutoria,horario.salon,horario.materia,horario.id_usuario,))
-            result=cursor.fetchone()
-          
-            cursor.execute("""
-    INSERT INTO horario_tutorias (id_fxp, id_mxr, id_salon, id_usuario, id_estado_tutoria, cupos, tema, fecha, hora_inicial, hora_final)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s, %s, %s)
 
-""",(id_fxp,result[0],result[2],horario.id_usuario,result[1],horario.cupos,horario.tema,horario.fecha,horario.hora_inicial,horario.hora_final))
-            conn.commit()
-            conn.close()
-            return {"resultado": "horario creado"}
+""",(horario.id_materia,horario.id_facultad,horario.id_programa))
+            id_fpxm=cursor.fetchone()[0]
+            existTutoria=ModelDocente.verify_hour(horario.hora_inicial,horario.hora_final,horario.fecha,id_usuario)
+            if(existTutoria==0):
+
+                cursor.execute("""
+        INSERT INTO horario_tutorias (id_fpxm, id_salon, id_usuario, id_estado_tutoria, cupos, tema, fecha, hora_inicial, hora_final)
+                VALUES (%s,%s,%s,%s,%s,%s,%s, %s,%s)
+
+                            
+
+
+    """,(id_fpxm, horario.id_salon,id_usuario,6,horario.cupos,horario.tema,horario.fecha,horario.hora_inicial,horario.hora_final))
+                conn.commit()
+
+
+                conn.close()
+                return {"success":success}
+            else:
+                return {"error":"el horario ya existe"}
+           
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
@@ -167,10 +201,10 @@ WHERE id_tutoria = %s
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                cursor.execute("delete from horario_tutorias where id_tutoria=%s",(id,))
+                cursor.execute("update horario_tutorias ht set ht.id_estado_tutoria=%s  where id_tutoria=%s",(3,id,))
                 conn.commit()
                 conn.close()
-                return {"success":"horario eliminado"}
+                return {"success":"horario deshabilitado"}
             except mysql.connector.Error as err:
                 print(err)
                 conn.rollback()
@@ -180,7 +214,15 @@ WHERE id_tutoria = %s
         try:
             conn=get_db_connection()
             cursor=conn.cursor()
-            cursor.execute("""       SELECT ht.id_tutoria,f.facultad,p.programa,s.salon,ht.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final  FROM `horario_tutorias` ht join salones s on ht.id_salon=s.id_salon join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado join facultadxprograma fxp on ht.id_fxp=fxp.id_fxp join facultades f on fxp.id_facultad=f.id_facultad join programas p on fxp.id_programa=p.id_programa where id_usuario=%s""",(id,))
+            cursor.execute("""     SELECT ht.id_tutoria,f.facultad,p.programa,m.materia ,s.salon,ht.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final  FROM `horario_tutorias` ht 
+join salones s on ht.id_salon=s.id_salon
+join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado 
+join fpxmateria fpxm on fpxm.id_fpxm=ht.id_fpxm
+join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp
+join facultades f on f.id_facultad=fxp.id_facultad
+join programas p on p.id_programa=fxp.id_programa
+join materias m on m.id_materia=fpxm.id_materia
+where txe.id_tipoxestado=6 and id_usuario=%s;""",(id,))
             data=cursor.fetchall()
             payload=[]
             content={}
@@ -189,13 +231,15 @@ WHERE id_tutoria = %s
                        'id':result[0],
                        'facultad':result[1],
                        'programa':result[2],
-                       'salon':result[3],
-                       'id_usuario':result[4],
-                       'estado_tutoria':result[5],'cupos':result[6],
-                       'tema':result[7],
-                       'fecha':result[8],
-                       'hora_inicial':result[9],
-                       'hora_final':result[10]
+                       'materia':result[3],
+                       'salon':result[4],
+                       'id_usuario':result[5],
+                       'estado_tutoria':result[6],
+                       'cupos':result[7],
+                       'tema':result[8],
+                       'fecha':result[9],
+                       'hora_inicial':result[10],
+                       'hora_final':result[11]
                     
 
                 }
@@ -205,10 +249,11 @@ WHERE id_tutoria = %s
             json_data=jsonable_encoder(payload)
             print(json_data)
             if json_data:
-                return {"resultado":json_data}
+                return {"resultado":json_data} 
             return {"error":"no existe ningun horario creado"}
 
         except mysql.connector.Error as err:
+            print(err)
             conn.rollback()
         finally:
             conn.close() 

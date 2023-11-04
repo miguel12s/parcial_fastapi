@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.tiporegistro_controller import *
-from models.TipoRegistro import TipoRegistro
+from schemas.TipoRegistro import TipoRegistro
 
 tipoRegistro=APIRouter()
 

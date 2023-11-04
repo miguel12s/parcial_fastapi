@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.moduloxrol import *
-from models.ModuloxRol import Moduloxrol
+from schemas.ModuloxRol import Moduloxrol
 
 moduloxrol=APIRouter()
 

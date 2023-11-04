@@ -1,13 +1,8 @@
-from fastapi import APIRouter,Depends,HTTPException,status
+from fastapi import APIRouter
 from controllers.auth_controller import AuthController
-from models.LoginRequest import LoginRequest
-
-from pydantic import BaseModel
-from typing import Annotated
-from passlib.context import CryptContext
+from schemas.LoginRequest import LoginRequest
 from controllers.campoad_controller import *
-from utils.utils import Hasher
-from models.Token import Token,TokenData
+
 auth=APIRouter(prefix="/auth")
 
 new_auth=AuthController()

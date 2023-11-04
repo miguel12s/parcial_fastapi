@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.rol_controller import *
-from models.Rol import Rol
+from schemas.Rol import Rol
 
 rol=APIRouter()
 

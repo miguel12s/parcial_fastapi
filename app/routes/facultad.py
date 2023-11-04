@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Depends, Request
 from typing import List
 from controllers.faculty_controller import *
-from models.Faculty import Faculty
+from schemas.Faculty import Faculty
 from utils.Security import Security
 
 facultad=APIRouter()
@@ -19,7 +19,7 @@ async def get_faculty(id_faculty: int):
     rpta = nueva_facultad.get_faculty(id_faculty)
     return rpta
 
-@facultad.get("/facultades",dependencies=[Depends(Security.verify_token)])
+@facultad.get("/facultades")
 async def get_faculties():
     try:
      rpta = nueva_facultad.get_faculties()

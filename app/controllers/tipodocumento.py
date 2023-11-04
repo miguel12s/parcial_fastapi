@@ -1,6 +1,6 @@
 import mysql.connector
 from fastapi import HTTPException
-from models.TypeDocument import TypeDocument
+from schemas.TypeDocument import TypeDocument
 from config.db_config import get_db_connection
 from fastapi.encoders import jsonable_encoder
 

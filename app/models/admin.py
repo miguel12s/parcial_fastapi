@@ -1,24 +1,23 @@
-import mysql.connector
 from fastapi import HTTPException
-from schemas.TipoRegistro import TipoRegistro
-from config.db_config import get_db_connection
 from fastapi.encoders import jsonable_encoder
+from schemas.Materia import Materia
+from config.db_config import get_db_connection
+import mysql.connector
 
-class TipoRegistroController:
-
-
-    def getTipoRegistros(self):
-         try:
+class ModelAdmin:
+    def getMaterias():
+        try:
+            print('entras')
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM tipo_registro_actividad")
+            cursor.execute("SELECT * FROM materias")
             result = cursor.fetchall()
             payload = []
             content = {}
             for data in result:
                 content = {
                     'id': data[0],
-                    'tipoRegistro': data[1],
+                    'materia': data[1],
 
                 }
                 payload.append(content)
@@ -29,53 +28,55 @@ class TipoRegistroController:
                 return {"resultado": json_data}
             else:
                 raise HTTPException(
-                    status_code=404, detail="tipo del registro not found")
+                    status_code=404, detail="materia not found")
 
-         except mysql.connector.Error as err:
+        except mysql.connector.Error as err:
             conn.rollback()
-         finally:
+        finally:
             conn.close()
+        
 
-    def getTipoRegistro(self, id_tipo_actividad: int):
+    def getMateria(id_materia: int):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM tipo_registro_actividad WHERE id_tipo_actividad= %s", (id_tipo_actividad,))
+                "SELECT * FROM materias WHERE id_materia= %s", (id_materia,))
             result = cursor.fetchone()
             if result:
-                payload = []
+                
                 content = {}
 
                 content = {
                     'id': int(result[0]),
-                    'tipoRegistro': result[1]
+                    'materia': result[1]
                 }
-                payload.append(content)
-
+                
+                print(content)
                 json_data = jsonable_encoder(content)
+                print(json_data)
                 return json_data
             else:
                 raise HTTPException(
-                    status_code=404, detail="tipo registro not found")
+                    status_code=404, detail="materia not found")
 
         except mysql.connector.Error as err:
             conn.rollback()
         finally:
             conn.close()
 
-    def createTipoRegistro(self, tipoRegistro: TipoRegistro):
+    def createMateria( materia: Materia):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "INSERT INTO tipo_registro_actividad (tipo_actividad) VALUES (%s)", (tipoRegistro.tipoRegistro,))
+                "INSERT INTO materias (materia) VALUES (%s)", (materia.materia,))
             conn.commit()
             conn.close()
-            return {"resultado": "tipo registro  creado"}
+            return {"resultado": "materia  creada"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
-            return ({"error": "el tipo registro  ya existe en el programa"})
+            return ({"error": "la materia  ya existe en el programa"})
         finally:
             conn.close()

@@ -1,7 +1,6 @@
-from fastapi import APIRouter, HTTPException,Request
+from fastapi import APIRouter,Request
 from controllers.user_controller import *
-from models.user_model import User
-from typing import List
+from schemas.user_model import User
 from utils.Security import Security
 router = APIRouter(prefix="/user")
 
@@ -28,11 +27,11 @@ async def get_user(request:Request):
 async def get_users():
     rpta = nuevo_usuario.get_users()
     return rpta
-@router.delete("/user/{id}")
+# @router.delete("/user/{id}")
 
-async def deleteUser(id):
-    rpta=nuevo_usuario.delete_user(id)
-    return rpta
+# async def deleteUser(id):
+#     rpta=nuevo_usuario.delete_user(id)
+#     return rpta
 
 
 @router.put('/user/{id_user}')
@@ -40,3 +39,13 @@ async def deleteUser(id):
 async def updateUser(user:User,id_user):
     rpta=nuevo_usuario.update_user(user,id_user)
     return rpta
+
+@router.post('/multiple-users')
+async def createMultipleUsers(formdata):
+    try:
+        print(formdata)
+        rpta=await nuevo_usuario.insertMultipleUsers(formdata)
+        return rpta
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400,detail=e)

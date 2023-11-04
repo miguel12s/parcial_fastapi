@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.programxfacultad import *
-from models.ProgramxFacultad import ProgramxFacultad
+from schemas.ProgramxFacultad import ProgramxFacultad
 
 programaxfacultad=APIRouter()
 

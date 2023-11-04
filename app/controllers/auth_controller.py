@@ -1,6 +1,6 @@
 import mysql.connector
 from fastapi import HTTPException
-from models.LoginRequest import LoginRequest
+from schemas.LoginRequest import LoginRequest
 from config.db_config import get_db_connection
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher

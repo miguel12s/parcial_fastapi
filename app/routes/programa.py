@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.program_controller import *
-from models.Program import Program
+from schemas.Program import Program
 
 programa=APIRouter()
 
