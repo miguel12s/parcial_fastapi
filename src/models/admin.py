@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
+from schemas.changePassword import ChangePassword
 from utils.utils import Hasher
 from schemas.Materia import Materia
 from config.db_config import get_db_connection
@@ -125,4 +126,37 @@ where f.id_facultad=(select f2.id_facultad from facultades f2 where  f2.facultad
             return ({"error": "el correo o el numero de documento ya se encuentra registrado "})
         finally:
             cursor.close()
+            conn.close()
+    def obtenerContraseña(user_id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "select contraseña from usuarios where id_usuario=%s", (user_id,))
+            result = cursor.fetchone()[0]
+            if result:
+                return result
+            else:
+                raise HTTPException(
+                    status_code=404, detail="el usuario no esta autenticado")
+
+        except mysql.connector.Error as err:
+            conn.rollback()
+        finally:
+            conn.close()
+    def cambiarContraseña(changedPassword:ChangePassword,user_id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "update usuarios set contraseña=%s  where id_usuario=%s", (Hasher.get_password_hash(changedPassword.contraseña_nueva),user_id))
+            conn.commit()
+        
+            return {"message":"la contraseña ha sido cambiada"}
+           
+
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+        finally:
             conn.close()

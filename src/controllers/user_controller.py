@@ -6,7 +6,8 @@ from schemas.user_model import User
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
 from models.admin import ModelAdmin
-from utils.Security import Security
+from schemas.changePassword import ChangePassword
+
 import pandas as pd
 
 
@@ -14,6 +15,19 @@ modelAdmin=ModelAdmin()
 
 class UserController:
         
+
+    def cambiarContraseña(self,changedPassword:ChangePassword,user_id:int):
+        try:
+          hashed_password=ModelAdmin.obtenerContraseña(user_id)
+          if(Hasher.verify_password(changedPassword.contraseña_actual,hashed_password)):
+            rpta=ModelAdmin.cambiarContraseña(changedPassword,user_id)
+            return rpta
+          return {"error":"la contraseña no se encuentra en el sistema"}
+        except Exception as e: 
+         print(e)
+         raise HTTPException(status_code=400, detail="Error al procesar el archivo")
+    
+
     def create_user(self, user: User):
 
         try:

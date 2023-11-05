@@ -50,3 +50,14 @@ async def createMultipleUsers(formdata:UploadFile):
         raise HTTPException(status_code=400,detail=e)
 
 
+@router.post('/cambiar-password')
+
+def cambiarContraseña(changePassword:ChangePassword,request:Request):
+    headers=request.headers
+    payload=Security.verify_token(headers)
+    user_id=payload['id_usuario']
+    print(user_id)
+    rpta = nuevo_usuario.cambiarContraseña(changePassword,user_id)
+    return rpta
+
+
