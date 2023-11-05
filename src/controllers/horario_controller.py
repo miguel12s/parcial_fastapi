@@ -26,7 +26,7 @@ join facultades f on f.id_facultad=fxp.id_facultad
 join programas p on p.id_programa=fxp.id_programa
 join materias m on m.id_materia=fpxm.id_materia
 join sedes se on se.id_sede=s.id_sede
-where txe.id_tipoxestado=6 and ht.id_tutoria=%s
+where  ht.id_tutoria=%s
 """,(id,))
            
             data = cursor.fetchone()
@@ -201,7 +201,7 @@ WHERE id_tutoria = %s
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                cursor.execute("update horario_tutorias ht set ht.id_estado_tutoria=%s  where id_tutoria=%s",(3,id,))
+                cursor.execute("update horario_tutorias ht set ht.id_estado_tutoria=%s  where id_tutoria=%s",(7,id,))
                 conn.commit()
                 conn.close()
                 return {"success":"horario deshabilitado"}
@@ -298,6 +298,20 @@ where txe.id_tipoxestado=6 and id_usuario=%s;""",(id,))
         try:
           rpta=ModelUser.cancelarTutoria(id_user,id_tutoria)
           ModelUser.recuperarCupos(id_tutoria)
+          return rpta
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
+    def obtenerTutoriaFinalizada(self,id_user):
+        try:
+          rpta=ModelUser.obtenerTutoriaFinalizada(id_user)
+          return rpta
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
+    def obtenerTutoriaFinalizadaDocente(self,id_user):
+        try:
+          rpta=ModelUser.obtenerTutoriaFinalizadaDocente(id_user)
           return rpta
         except Exception as e: 
             print(e)

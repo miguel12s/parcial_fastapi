@@ -27,6 +27,7 @@ async def getHorarios():
 @horario.get('/horario/{id}')
 
 async def getHorario(id:int):
+        print(id)
         rpta=nueva_horario.getHorario(id)  
         return rpta
 
@@ -84,6 +85,36 @@ def mostrarTutoriasEstudiante(request:Request):
     except Exception as e :
         print(e)
         raise HTTPException(status_code=400,detail=e) 
+    
+@horario.get('/obtenerTutoriaFinalizadas')
+
+def obtenerTutoriaFinalizadas(request:Request):
+    try:
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        user_id=payload['id_usuario']
+        rpta=nueva_horario.obtenerTutoriaFinalizada(user_id)
+        return rpta
+    except Exception as e :
+        print(e)
+        raise HTTPException(status_code=400,detail=e) 
+
+
+@horario.get('/obtenerTutoriaFinalizadasDocente')
+
+def obtenerTutoriaFinalizadaDocente(request:Request):
+    try:
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        user_id=payload['id_usuario']
+        rpta=nueva_horario.obtenerTutoriaFinalizadaDocente(user_id)
+        return rpta
+    except Exception as e :
+        print(e)
+        raise HTTPException(status_code=400,detail=e) 
+
+
+
 @horario.delete('/cancelarTutoria/{id_tutoria}')
 
 def cancelarTutoria(request:Request,id_tutoria:int):
@@ -96,6 +127,7 @@ def cancelarTutoria(request:Request,id_tutoria:int):
       except Exception as e :
         print(e)
         raise HTTPException(status_code=400,detail=e)
+
     
 
                

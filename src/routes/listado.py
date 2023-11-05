@@ -20,7 +20,7 @@ async def getListados():
         return rpta['resultado']
 
 
-@listado.get('/listado/{id}',response_model=ListadoEstudiante)
+@listado.get('/listado/{id}')
 
 async def getListado(id):
         rpta=nueva_listado.getListado(id)  

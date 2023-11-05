@@ -11,29 +11,44 @@ class ListadoController:
             cursor = conn.cursor()
             cursor.execute(
                 """
-               SELECT * FROM `lista_estudiantes` WHERE id_lista=%s
+               SELECT ht.id_tutoria,ht.id_usuario,concat(u.nombres," ",u.apellidos) as nombre_estudiante, le.id_usuario,txe.estado,m.materia,u.numero_documento,p.programa,le.asistencia,le.comentario  FROM `horario_tutorias` ht 
+            join lista_estudiantes le on le.id_tutoria=ht.id_tutoria
+            join salones s on ht.id_salon=s.id_salon
+            join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado 
+            join fpxmateria fpxm on fpxm.id_fpxm=ht.id_fpxm
+            join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp
+            join facultades f on f.id_facultad=fxp.id_facultad
+            join programas p on p.id_programa=fxp.id_programa
+            join materias m on m.id_materia=fpxm.id_materia
+            join usuarios u on u.id_usuario=le.id_usuario
+            where txe.id_tipoxestado=7 and ht.id_tutoria=%s
  
 """, (id,))
-            data = cursor.fetchone()
-            if data:
-                payload = []
-                content = {}
+            data = cursor.fetchall()
+            payload = []
+            content = {}
+            for i in data:
+        
 
                 content = {
-                    'id': data[0],
-                    'id_horario': data[1],
-                    'id_usuario':data[2],
-                    'comentario':data[3],
-                    'asistencia':str(data[4]),
+                     'id_tutoria':i[0],
+                       'id_docente':i[1],
+                       'nombre_estudiante':i[2],
+                       'id_estudiante':i[3],
+                       'estado_tutoria':i[4],
+                       'materia':i[5],
+                       'numero_documento':i[6],
+                       'programa':i[7],
+                       'asistencia':i[8],
+                       'comentario':i[9]
                 }
                 payload.append(content)
-
-                json_data = jsonable_encoder(content)
-                return json_data
+                content={}
+            json_data = jsonable_encoder(payload)
+            if data:
+                return {"resultado":json_data}
             else:
-                raise HTTPException(
-                    status_code=404, detail="listado not found")
-
+                return {"error":"no existen estudiantes en el listado "}
         except mysql.connector.Error as err:
             conn.rollback()
         finally:
