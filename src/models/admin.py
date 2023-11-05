@@ -122,7 +122,7 @@ where f.id_facultad=(select f2.id_facultad from facultades f2 where  f2.facultad
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
-            return ({"error": "la materia  ya existe en el programa"})
+            return ({"error": "el correo o el numero de documento ya se encuentra registrado "})
         finally:
             cursor.close()
             conn.close()

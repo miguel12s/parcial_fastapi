@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request,UploadFile
 from typing import Any, List
 from controllers.horario_controller import *
-from schemas.Horario import Horario
+from schemas.Horario import Horario,AgendarTutoria
 from utils.Security import Security
 horario=APIRouter()
 
@@ -60,6 +60,45 @@ async def observacion(file:UploadFile,id_usuario):
         except Exception as e:
                 print(e)
                 
-                
+@horario.post('/agendar')
+
+def agendarTutoria(tutoria:AgendarTutoria,request:Request):
+    try:
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        user_id=payload['id_usuario']
+        rpta=nueva_horario.agendarTutoria(tutoria.id,user_id)
+        return rpta
+    except Exception as e :
+        print(e)
+        raise HTTPException(status_code=400,detail=e) 
+@horario.get('/mostrarTutoriasEstudiante')
+
+def mostrarTutoriasEstudiante(request:Request):
+    try:
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        user_id=payload['id_usuario']
+        rpta=nueva_horario.obtenerTutoriasPendientes(user_id)
+        return rpta
+    except Exception as e :
+        print(e)
+        raise HTTPException(status_code=400,detail=e) 
+@horario.delete('/cancelarTutoria/{id_tutoria}')
+
+def cancelarTutoria(request:Request,id_tutoria:int):
+      try:
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        user_id=payload['id_usuario']
+        rpta=nueva_horario.cancelarTutoria(user_id,id_tutoria)
+        return rpta
+      except Exception as e :
+        print(e)
+        raise HTTPException(status_code=400,detail=e)
+    
+
+               
+        
 
 

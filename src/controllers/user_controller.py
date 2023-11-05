@@ -6,6 +6,7 @@ from schemas.user_model import User
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
 from models.admin import ModelAdmin
+from utils.Security import Security
 import pandas as pd
 
 
@@ -224,6 +225,7 @@ update usuarios set id_rol=%s, id_estado=%s, nombres=%s, apellidos=%s, id_tipo_d
         print(e)
         raise HTTPException(status_code=400, detail="Error al procesar el archivo")
     
+
     
        
 

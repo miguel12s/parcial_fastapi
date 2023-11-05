@@ -5,6 +5,7 @@ from config.db_config import get_db_connection
 from schemas.Horario import Horario
 from fastapi.encoders import jsonable_encoder
 from models.docente import ModelDocente
+from models.user import ModelUser
 
 success="el horario ha sido creado"
 
@@ -29,7 +30,6 @@ where txe.id_tipoxestado=6 and ht.id_tutoria=%s
 """,(id,))
            
             data = cursor.fetchone()
-            print(data)
             if data:
                 payload = []
                 content = {}
@@ -76,7 +76,7 @@ join facultades f on f.id_facultad=fxp.id_facultad
 join programas p on p.id_programa=fxp.id_programa
 join materias m on m.id_materia=fpxm.id_materia
 join usuarios u on u.id_usuario=ht.id_usuario
-where txe.id_tipoxestado=6
+where txe.id_tipoxestado=6 and ht.cupos>0
 """)
             result = cursor.fetchall()
             print(result)
@@ -277,7 +277,32 @@ where txe.id_tipoxestado=6 and id_usuario=%s;""",(id,))
             return ({"error": "el horario ya existe en el programa"})
         finally:
             conn.close()
-          
+    def agendarTutoria(self,id_tutoria:int,user_id:int):
+        try:
+            if(ModelUser.verificar_agendamiento(id_tutoria,user_id)==0):
+              rpta=ModelUser.agendar_tutoria(id_tutoria,user_id)
+              ModelUser.actualizarCupos(id_tutoria)
+              return rpta
+            return {"error":"la tutoria ya ha sido agendada"}
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
+    def obtenerTutoriasPendientes(self,id_user:int):
+        try:
+          rpta=ModelUser.obtenerTutoriasPendientes(id_user)
+          return rpta
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
+    def cancelarTutoria(self,id_user,id_tutoria:int):
+        try:
+          rpta=ModelUser.cancelarTutoria(id_user,id_tutoria)
+          ModelUser.recuperarCupos(id_tutoria)
+          return rpta
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
+    
                 # def createHorario(self,horario:Horario):
     #     try:
     #         conn = get_db_connection()

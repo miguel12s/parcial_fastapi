@@ -14,3 +14,5 @@ class Horario(BaseModel):
     fecha:date
     hora_inicial:str
     hora_final:str
+class  AgendarTutoria(BaseModel):
+    id:int
