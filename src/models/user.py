@@ -136,7 +136,7 @@ where txe.id_tipoxestado=6 and le.id_usuario=%s
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("""
-            SELECT ht.id_tutoria,f.facultad,p.programa,m.materia ,s.salon,le.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final,u.nombres,u.apellidos  FROM `horario_tutorias` ht 
+            SELECT ht.id_tutoria,f.facultad,p.programa,m.materia ,s.salon,le.id_usuario,txe.estado,ht.cupos,ht.tema,ht.fecha,ht.hora_inicial,ht.hora_final,u.nombres,u.apellidos,le.comentario  FROM `horario_tutorias` ht 
             join lista_estudiantes le on le.id_tutoria=ht.id_tutoria
             join salones s on ht.id_salon=s.id_salon
             join tipoxestado txe on ht.id_estado_tutoria=txe.id_tipoxestado 
@@ -167,7 +167,8 @@ where txe.id_tipoxestado=6 and le.id_usuario=%s
                        'hora_inicial':data[10],
                        'hora_final':data[11],
                        'nombres':data[12],
-                       'apellidos':data[13]
+                       'apellidos':data[13],
+                       'observacion':data[14]
                     
 
                 }

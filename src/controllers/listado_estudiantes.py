@@ -1,6 +1,8 @@
+from typing import List
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
+from models.listado import ModelListado
 from schemas.ListadoEstudiante import ListadoEstudiante
 from fastapi.encoders import jsonable_encoder
 
@@ -151,6 +153,14 @@ WHERE id_lista = %s
             finally:
                 conn.close()
             pass
+    def pasarLista(self,id_user:int,listado:List[ListadoEstudiante]):
+        try:
+          rpta=ModelListado.pasarLista(id_user,listado)
+          ModelListado.actualizarEstadoTutoria(id_user,listado)
+          return rpta
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
     # def createHorario(self,horario:Horario):
     #     try:
     #         conn = get_db_connection()

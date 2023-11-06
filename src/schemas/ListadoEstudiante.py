@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 
 class ListadoEstudiante(BaseModel):
-    id:int
-    id_horario:int
+    id:int=0
+    
     id_usuario:int
-    comentario:str
-    asistencia:str
+    asistencia:bool
+    id_tutoria:int
+    observacion:str
