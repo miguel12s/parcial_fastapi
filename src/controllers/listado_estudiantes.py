@@ -23,7 +23,7 @@ class ListadoController:
             join programas p on p.id_programa=fxp.id_programa
             join materias m on m.id_materia=fpxm.id_materia
             join usuarios u on u.id_usuario=le.id_usuario
-            where txe.id_tipoxestado=7 and ht.id_tutoria=%s
+            where txe.id_tipoxestado=6 and ht.id_tutoria=%s
  
 """, (id,))
             data = cursor.fetchall()
