@@ -1,3 +1,4 @@
+import datetime
 from typing import Any
 import mysql.connector
 from fastapi import HTTPException, UploadFile
@@ -197,11 +198,17 @@ WHERE id_tutoria = %s
 
 
 
-    def deleteHorario(self,id:int):
+    def deleteHorario(self,id:int,id_user:int):
             try:
+                fecha_actual=datetime.datetime.now()
+                fecha_sin_microsegundos=fecha_actual.replace(microsecond=0)
+
+                fecha_formateada = fecha_sin_microsegundos.strftime("%Y-%m-%d %H:%M:%S")
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                cursor.execute("update horario_tutorias ht set ht.id_estado_tutoria=%s  where id_tutoria=%s",(7,id,))
+                cursor.execute("update horario_tutorias ht set ht.id_estado_tutoria=%s  where id_tutoria=%s",(8,id,))
+                conn.commit()
+                cursor.execute('INSERT INTO `registro_actividad`( `id_tipo_actividad`, `id_usuario`, `fecha_hora`, `ubicacion_actividad`) VALUES (%s,%s,%s,%s) ',(2,id_user,fecha_formateada,'eliminar tutoria'))
                 conn.commit()
                 conn.close()
                 return {"success":"horario deshabilitado"}

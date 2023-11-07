@@ -23,6 +23,7 @@ class TipoDocumentoController:
                 content = {}
             json_data = jsonable_encoder(payload)
             print(json_data)
+            conn.close()
             if result:
                 return {"resultado": json_data}
             else:

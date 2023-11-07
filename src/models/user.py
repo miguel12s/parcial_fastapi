@@ -198,7 +198,7 @@ where txe.id_tipoxestado=6 and le.id_usuario=%s
             join programas p on p.id_programa=fxp.id_programa
             join materias m on m.id_materia=fpxm.id_materia
             join usuarios u on u.id_usuario=ht.id_usuario
-            where txe.id_tipoxestado=7 and ht.id_usuario=%s
+            where txe.id_tipoxestado=2 and ht.id_usuario=%s
             """,(user_id,))
             print(user_id)
             result = cursor.fetchall()

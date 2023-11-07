@@ -23,6 +23,7 @@ from routes.listado import listado
 from routes.auth import auth
 from routes.admin import admin
 from routes.materiaxprograma import materiaxprograma
+from routes.reportes import reporte
 app = FastAPI()
 
 origins = [
@@ -63,6 +64,7 @@ app.include_router(auth)
 app.include_router(estadistica)
 app.include_router(admin)
 app.include_router(materiaxprograma)
+app.include_router(reporte)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

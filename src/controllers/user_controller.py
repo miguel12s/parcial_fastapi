@@ -7,7 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
 from models.admin import ModelAdmin
 from schemas.changePassword import ChangePassword
-
+import datetime
 import pandas as pd
 
 
@@ -30,11 +30,15 @@ class UserController:
 
     def create_user(self, user: User):
 
-        try:
-            
+        try:    
+            fecha_actual=datetime.datetime.now()
+            fecha_sin_microsegundos=fecha_actual.replace(microsecond=0)
+
+            fecha_formateada = fecha_sin_microsegundos.strftime("%Y-%m-%d %H:%M:%S")
+            print(fecha_formateada)
             conn = get_db_connection()
             cursor = conn.cursor()
-
+            print(fecha_formateada)
 
             cursor.execute("""
 INSERT INTO usuarios (id_rol, id_estado, nombres, apellidos, id_tipo_documento, numero_documento, celular,  correo, contraseña)
@@ -42,7 +46,7 @@ values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
 
 
 
-""",(user.id_rol,4,user.nombres,user.apellidos,user.id_tipo_documento,user.numero_documento,user.celular,user.correo,Hasher.get_password_hash(user.contraseña),))
+""",(user.id_rol,4,user.nombres,user.apellidos,user.id_tipo_documento,user.numero_documento,user.celular,user.correo,Hasher.get_password_hash(user.contraseña)))
             
             id_user=cursor.lastrowid
             conn.commit()
@@ -56,6 +60,8 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
 
             cursor.execute('INSERT INTO `fpxusuario`(`id_fxp`, `id_usuario`) VALUES (%s,%s)',(id_fxp,id_user))
             conn.commit()
+            cursor.execute('INSERT INTO `registro_actividad`( `id_tipo_actividad`, `id_usuario`, `fecha_hora`, `ubicacion_actividad`) VALUES (%s,%s,%s,%s) ',(2,id_user,fecha_formateada,'crear usuario'))
+            conn.commit()
             conn.close()
 
 
@@ -65,6 +71,7 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
 
             return {"resultado": "Usuario creado"}
         except mysql.connector.Error as err:
+            print(err)
             conn.rollback()
             return {"error":err}
         finally:
@@ -138,14 +145,16 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
                 }
                 payload.append(content)
                 content = {}
+            conn.close()
             json_data = jsonable_encoder(payload)        
             if result:
                return {"resultado": json_data}
             else:
-                raise HTTPException(status_code=404, detail="Users not found")  
+                return {"resultado":payload}
                 
         except mysql.connector.Error as err:
             conn.rollback()
+
         finally:
             conn.close()
     def delete_user(self,id_user:int):

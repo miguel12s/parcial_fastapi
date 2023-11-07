@@ -39,8 +39,11 @@ async def updateHorario(horario:Horario,id:int):
 
 @horario.delete('/horario/{id}')
 
-async def deleteHorario(id):
-        rpta=nueva_horario.deleteHorario(id)
+async def deleteHorario(id,request:Request):
+        headers=request.headers
+        payload=Security.verify_token(headers)
+        id_usuario=payload['id_usuario']
+        rpta=nueva_horario.deleteHorario(id,id_usuario)
         return rpta
 
 @horario.get('/horario-usuario')
