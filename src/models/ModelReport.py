@@ -385,7 +385,7 @@ and ht.fecha >= STR_TO_DATE(%s, '%d-%m-%Y')
             conn.rollback()
          finally:
             conn.close()
-    def obtenerListadoPorHorario(id,user_id,data:Range):
+    def obtenerListadoPorHorario(id):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -401,7 +401,7 @@ and ht.fecha >= STR_TO_DATE(%s, '%d-%m-%Y')
             join programas p on p.id_programa=fxp.id_programa
             join materias m on m.id_materia=fpxm.id_materia
             join usuarios u on u.id_usuario=le.id_usuario
-            where txe.id_tipoxestado=6 and ht.id_tutoria=%s
+            where txe.id_tipoxestado=2 and ht.id_tutoria=%s
  
 """, (id,))
             data = cursor.fetchall()
@@ -411,11 +411,10 @@ and ht.fecha >= STR_TO_DATE(%s, '%d-%m-%Y')
         
 
                 content = {
-                     'id_tutoria':i[0],
-                       'id_docente':i[1],
+                     'codigo_tutoria':i[0],
+                      'estado_tutoria':i[4],
+
                        'nombre_estudiante':i[2],
-                       'id_estudiante':i[3],
-                       'estado_tutoria':i[4],
                        'materia':i[5],
                        'numero_documento':i[6],
                        'programa':i[7],
@@ -424,6 +423,7 @@ and ht.fecha >= STR_TO_DATE(%s, '%d-%m-%Y')
                 }
                 payload.append(content)
                 content={}
+            print(payload)
             df = pd.DataFrame(payload)
                 # Generar un archivo temporal para el informe
             with tempfile.NamedTemporaryFile(delete=True, suffix=".xlsx") as tmp_file:file_name = tmp_file.name

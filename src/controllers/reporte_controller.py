@@ -11,9 +11,9 @@ class ReporteController:
        except Exception as e: 
             print(e)
             raise HTTPException(status_code=400, detail=e)
-   def obtenerListadoPorHorario(id,user_id,data:Range):
+   def obtenerListadoPorHorario(self,id):
     try:
-          rpta=ModelReport.obtenerListadoPorHorario(id,user_id,data)
+          rpta=ModelReport.obtenerListadoPorHorario(id)
           return rpta
     except Exception as e: 
             print(e)

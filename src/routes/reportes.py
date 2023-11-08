@@ -15,11 +15,8 @@ def reporteListadoEstudiante(data:Range):
     rpta=nuevo_reporte.obtenerListadoEstudiantes(data)
     return rpta
 
-@reporte.post('/horario/{id}')
+@reporte.get('/horario/{id}')
 
-def reporteHorarios(id,request:Request,data:Range):
-    headers=request.headers
-    payload=Security.verify_token(headers=headers)
-    user_id=payload['id_usuario']
-    rpta=nuevo_reporte.obtenerListadoPorHorario(user_id,id,data)
+def reporteHorarios(id):
+    rpta=nuevo_reporte.obtenerListadoPorHorario(id)
     return rpta
