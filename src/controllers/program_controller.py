@@ -72,10 +72,27 @@ select * from programas
                 "INSERT INTO programas (programa) VALUES (%s)", (program.programa,))
             conn.commit()
             conn.close()
-            return {"resultado": "programa  creado"}
+            return {"success": "programa  creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
             return ({"error": "el programa  ya existe en el programa"})
+        finally:
+            conn.close()
+    def update_program(self,data:Program,id_program):
+        try:
+            print(id_program)
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""update programas set programa=%s where id_programa=%s""",(data.programa,id_program))
+            conn.commit()
+            conn.close()
+            return {"success":"el programa ha sido actualizada"}
+            
+
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return {"error":"el programa se encuentra registrada en el programa"}
         finally:
             conn.close()

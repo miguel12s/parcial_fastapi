@@ -14,6 +14,11 @@ async def create_faculty(facultad:Faculty):
     return rpta
 
 
+@facultad.put("/facultad/{id_faculty}")
+async def create_faculty(facultad:Faculty,id_faculty):
+    rpta = nueva_facultad.update_faculty(facultad,id_faculty)
+    return rpta
+
 @facultad.get("/facultad/{id_faculty}",response_model=Faculty)
 async def get_faculty(id_faculty: int):
     rpta = nueva_facultad.get_faculty(id_faculty)

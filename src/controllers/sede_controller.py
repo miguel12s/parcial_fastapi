@@ -67,10 +67,26 @@ class SedeController:
                 "INSERT INTO sedes (sede) VALUES (%s)", (sede.sede,))
             conn.commit()
             conn.close()
-            return {"resultado": "sede  creado"}
+            return {"success": "sede  creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
             return ({"error": "la sede  ya existe en el programa"})
+        finally:
+            conn.close()
+    def update_sede(self,data:Sede,id_sede):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""update sedes set sede=%s where id_sede=%s""",(data.sede,id_sede))
+            conn.commit()
+            conn.close()
+            return {"success":"la sede ha sido actualizada"}
+            
+
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return {"error":"la sede se encuentra registrada en el programa"}
         finally:
             conn.close()

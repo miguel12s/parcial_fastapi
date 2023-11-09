@@ -83,10 +83,39 @@ where s.sede=%s""",(salones.capacidad,salones.sede,))
                 "INSERT INTO salones (id_sede,id_capacidad,salon) VALUES (%s,%s,%s)", (result[0],result[1],salones.salon,))
             conn.commit()
             conn.close()
-            return {"resultado": "salon creado"}
+            return {"success": "salon creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
-            return ({"error": "error"})
+            return ({"error": "el salon ya ha sido creado"})
         finally:
             conn.close()
+    def update_salon(self,data:Salones,id_salon):
+        try:
+           
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            print(data)
+            cursor.execute("""select se.id_sede,c.id_capacidad from salones s
+            join capacidades c on c.capacidad=%s
+            join sedes se on se.sede=%s
+            where s.id_salon=%s                              
+                           
+                           """,(data.capacidad,data.sede,id_salon))
+            result=cursor.fetchone()
+            print(result)
+            cursor.execute("""update salones  set id_capacidad=%s,
+                           id_sede=%s,salon=%s
+                            where id_salon=%s""",(result[1],result[0],data.salon,id_salon))
+            conn.commit()
+            conn.close()
+            return {"success":"el salon  ha sido actualizada"}
+            
+
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return {"error":"el salon  se encuentra registrada en el programa"}
+        finally:
+            conn.close()
+    

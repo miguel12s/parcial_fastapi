@@ -25,3 +25,8 @@ def createPrograma(program:Program):
       rpta=nueva_programa.createProgram(program)
       return rpta
 
+
+@programa.put("/programa/{id_programa}")
+async def create_faculty(programa:Program,id_programa):
+    rpta = nueva_programa.update_program(programa,id_programa)
+    return rpta

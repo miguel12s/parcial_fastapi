@@ -16,6 +16,7 @@ class FacultyController:
             conn.close()
             return {"resultado": "facultad creada"}
         except mysql.connector.Error as err:
+            print(err)
             conn.rollback()
             return ({"error": "la facultad ya existe en el programa"})
         finally:
@@ -106,3 +107,20 @@ class FacultyController:
             conn.rollback()
         finally:
             conn.close()
+    def update_faculty(self,data:Faculty,id_faculty):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""update facultades set facultad=%s where id_facultad=%s""",(data.facultad,id_faculty))
+            conn.commit()
+            conn.close()
+            return {"success":"la facultad ha sido actualizada"}
+            
+
+        except mysql.connector.Error as err:
+            
+            conn.rollback()
+            return {"error":"la facultad se encuentra registrada en el programa"}
+        finally:
+            conn.close()
+

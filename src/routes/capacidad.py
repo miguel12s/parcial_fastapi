@@ -26,4 +26,7 @@ async def getCapacidad(id_capacidad):
         rpta=nueva_capacidad.getCapacidad(id_capacidad)  
         return rpta
 
-
+@capacidad.put("/capacidad/{id_capacidad}")
+async def create_faculty(capacidad:Capacidad,id_capacidad):
+    rpta = nueva_capacidad.update_capacidad(capacidad,id_capacidad)
+    return rpta

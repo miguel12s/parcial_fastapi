@@ -26,5 +26,8 @@ async def getSede(id_sede):
         rpta=nueva_sede.getSede(id_sede)  
         return rpta
 
-
+@sede.put("/sede/{id_sede}")
+async def create_faculty(sede:Sede,id_sede):
+    rpta = nueva_sede.update_sede(sede,id_sede)
+    return rpta
 
