@@ -77,3 +77,19 @@ class TipoDocumentoController:
             return ({"error": "el tipo de documento  ya existe en el programa"})
         finally:
             conn.close()
+    def update_type_document(self,data:TypeDocument,id_type_document):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""update tipos_documento set tipo_documento=%s where id_tipo_documento=%s""",(data.tipo_documento,id_type_document))
+            conn.commit()
+            conn.close()
+            return {"success":"el tipo de documento ha sido actualizada"}
+            
+
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return {"error":"el tipo de documento se encuentra registrada en el programa"}
+        finally:
+            conn.close()

@@ -1,11 +1,12 @@
 import mysql.connector
 from fastapi import HTTPException
+from models.auth import ModelAuth
 from schemas.LoginRequest import LoginRequest
 from config.db_config import get_db_connection
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
 from utils.Security import Security
-
+from utils.utils import Hasher
 
 class AuthController:
         
@@ -38,4 +39,16 @@ class AuthController:
                 return {"error":err}
             finally:
              conn.close()
+        def changePassword(self,email:str):
+            exist=ModelAuth.existEmail(email)
+            if(exist[0]==1):
+             password=ModelAuth.get_password()
+             password_hash=Hasher.get_password_hash(password)
+             ModelAuth.updatePassword(password_hash,email)
+             ModelAuth.send_email(exist[1],email,password)
+            
+    
+             return {   "success":"la contraseña ha sido generada porfavor ir al correo"}
+            else:
+             return {"error":"el correo no existe en el sistema"}
     

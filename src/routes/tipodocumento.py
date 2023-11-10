@@ -29,3 +29,9 @@ async def createTypeDocument(typeDocument:TypeDocument):
         return rpta
 
 
+@tipoDocumento.put("/tipoDocumento/{id_tipo_documento}")
+async def create_faculty(tipoDocumento:TypeDocument,id_tipo_documento):
+    rpta = nuevo_tipoDocumento.update_type_document(tipoDocumento,id_tipo_documento)
+    return rpta
+
+

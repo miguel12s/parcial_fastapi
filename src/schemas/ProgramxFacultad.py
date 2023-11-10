@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
 class ProgramxFacultad(BaseModel):
-    id:int
+    id:int=0
     programa:str
+    facultad:str    

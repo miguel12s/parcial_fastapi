@@ -17,7 +17,7 @@ def getFacultadxProgramas():
 @programaxfacultad.get('/facxpro/{id_facultad}')
 
 def getFacultadxPrograma(id_facultad:str):
-      rpta=nueva_programaxfacultad.getFacultadxPrograma(id_facultad)
+      rpta=nueva_programaxfacultad.getFacultadxProgramaDesc(id_facultad)
       return rpta
 
 @programaxfacultad.post('/facultadxprograma')
@@ -25,6 +25,17 @@ def getFacultadxPrograma(id_facultad:str):
 def createFacultadxPrograma(fxp:ProgramxFacultad):
       rpta=nueva_programaxfacultad.createFacultadxPrograma(fxp)
       return rpta
+
+@programaxfacultad.put('/facultadxprograma/{id_fxp}')
+
+def updateFacultadxPrograma(fxp:ProgramxFacultad,id_fxp:int):
+      rpta=nueva_programaxfacultad.updateFacultadxPrograma(fxp,id_fxp)
+      return rpta
+@programaxfacultad.get('/facultadxprograma/{id_facultad}')
+
+def getFacultadForPrograma(id_facultad):
+       rpta=nueva_programaxfacultad.getFacultadxPrograma(id_facultad)
+       return rpta
 
 
 

@@ -44,24 +44,22 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                """SELECT id_fxp,p.programa FROM facultadxprograma fxp join programas p on fxp.id_programa=p.id_programa join facultades f  on f.id_facultad=fxp.id_facultad where fxp.id_facultad=%s
+                """SELECT id_fxp,p.programa,f.facultad FROM facultadxprograma fxp join programas p on fxp.id_programa=p.id_programa join facultades f  on f.id_facultad=fxp.id_facultad where fxp.id_facultad=%s
 """, (id_facultad,))
             result = cursor.fetchall()
-            print(result)
-            payload = []
-            content = {}
+            payload=[]
             for data in result:
-                content = {
+             content = {
                     'id': data[0],
-                    'programa': data[1],                   
+                    'programa': data[1],
+
 
                 }
-                payload.append(content)
-                content = {}
-            json_data = jsonable_encoder(payload)
-            print(json_data)
-            if result:
-                return {"resultado": json_data}
+             payload.append(content)
+             content={}
+            json_data=jsonable_encoder(payload)
+            if data:
+                return {"resultado":payload}
             else:
                 raise HTTPException(
                     status_code=404, detail="facultadxprograma not found")
@@ -96,10 +94,60 @@ JOIN
                 "INSERT INTO facultadxprograma (id_facultad,id_programa) VALUES (%s,%s)", (result[0],result[1],))
             conn.commit()
             conn.close()
-            return {"resultado": "programaxfacultad creado"}
+            return {"success": "programaxfacultad creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
             return ({"error": "programaxfacultad  ya existe en el programa"})
+        finally:
+            conn.close()
+    def updateFacultadxPrograma(self,data:ProgramxFacultad,id_fxp):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            print(data)
+            cursor.execute("""SELECT p.id_programa,f.id_facultad from programas p join facultades f on f.facultad=%s
+            where p.programa=%s
+                           """,(data.facultad,data.programa))
+            result=cursor.fetchone()
+            print(result)
+            cursor.execute("""update facultadxprograma  set id_facultad=%s,id_programa=%s where id_fxp=%s
+                          
+                            """,(result[1],result[0],id_fxp))
+            conn.commit()
+            conn.close()
+            return {"success":"la facultadxprograma  ha sido actualizada"}
+            
+
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return {"error":"la facultadxprograma  se encuentra registrada en el programa"}
+        finally:
+            conn.close()
+    def getFacultadxProgramaDesc(self,id_fxp:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                """SELECT id_fxp,p.programa,f.facultad FROM facultadxprograma fxp join programas p on fxp.id_programa=p.id_programa join facultades f  on f.id_facultad=fxp.id_facultad where fxp.id_fxp=%s
+""", (id_fxp,))
+            data= cursor.fetchone()
+            
+            content = {
+                    'id': data[0],
+                    'programa': data[1],
+                    'facultad':data[2]
+
+
+                }
+            if data:
+                return {"resultado":content}
+            else:
+                raise HTTPException(
+                    status_code=404, detail="facultadxprograma not found")
+
+        except mysql.connector.Error as err:
+            conn.rollback()
         finally:
             conn.close()
