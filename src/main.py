@@ -21,7 +21,7 @@ from routes.registroActividad import registro_actividad
 from routes.horario import horario
 from routes.listado import listado
 from routes.auth import auth
-from routes.admin import admin
+from routes.contactenos import admin
 from routes.materiaxprograma import materiaxprograma
 from routes.reportes import reporte
 app = FastAPI()

@@ -22,7 +22,7 @@ class EstadisticasController():
     MONTH(ht.fecha) AS mes,
 
     SUM(CASE WHEN txe.id_tipoxestado=6 THEN 1 ELSE 0 END) AS tutorias_terminadas,
-    SUM(CASE WHEN txe.id_tipoxestado=3 THEN 1 ELSE 0 END) AS tutorias_eliminadas
+    SUM(CASE WHEN txe.id_tipoxestado=8 THEN 1 ELSE 0 END) AS tutorias_eliminadas
 FROM horario_tutorias ht 
 join tipoxestado txe on txe.id_tipoxestado=ht.id_estado_tutoria
 GROUP BY año,mes
