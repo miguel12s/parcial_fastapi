@@ -71,10 +71,24 @@ class TipoEstadoController:
                 "INSERT INTO tipoestado (tipo_estado) VALUES (%s)", (tipoEstado.tipoEstado,))
             conn.commit()
             conn.close()
-            return {"resultado": "tipo estado  creado"}
+            return {"success": "tipo estado  creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
             return ({"error": "el tipo estado  ya existe en el programa"})
+        finally:
+            conn.close()
+    def updateTipoEstado(self, tipoxestado: TipoEstado,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("update tipoestado set tipo_estado=%s where id_tipoestado=%s ", (tipoxestado.tipoEstado,id))
+            conn.commit()
+            conn.close()
+            return {"success": "tipoxestado creado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return ({"error": "tipoxestado  ya existe en el programa"})
         finally:
             conn.close()

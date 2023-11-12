@@ -26,7 +26,7 @@ async def get_user(request:Request):
 @router.get("/get_users")
 async def get_users():
     rpta = nuevo_usuario.get_users()
-    return rpta
+    return rpta['resultado']
 # @router.delete("/user/{id}")
 
 # async def deleteUser(id):

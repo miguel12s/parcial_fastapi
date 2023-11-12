@@ -17,12 +17,20 @@ def getTipoxEstado():
 
 def getTipoxEstado(id):
     rpta=nuevo_tipoxestado.getTipoxEstado(id)
+    print(rpta)
     return rpta
 
 @tipoxestado.post('/tipoxestado')
 
 def createTipoxEstado(tipoxestado:TipoxEstado):
     rpta=nuevo_tipoxestado.createTipoxEstado(tipoxestado)
+    return rpta
+
+
+@tipoxestado.put('/tipoxestado/{id}')
+
+def updateTipoxEstado(tipoxestado:TipoxEstado,id):
+    rpta=nuevo_tipoxestado.updateTipoxEstado(tipoxestado,id)
     return rpta
 
 

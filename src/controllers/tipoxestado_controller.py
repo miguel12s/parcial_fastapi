@@ -81,7 +81,27 @@ SELECT txe.id_tipoxestado,te.tipo_estado,txe.estado FROM tipoxestado txe join ti
                 (result[0],tipoxestado.estado,))
             conn.commit()
             conn.close()
-            return {"resultado": "tipoxestado creado"}
+            return {"success": "tipoxestado creado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return ({"error": "tipoxestado  ya existe en el programa"})
+        finally:
+            conn.close()
+
+    def updateTipoxEstado(self, tipoxestado: TipoxEstado,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            print(tipoxestado)
+            cursor.execute("select id_tipoestado from tipoestado where tipo_estado=%s",(tipoxestado.tipoxestado,))
+            result=cursor.fetchone()
+            print(result)
+            cursor.execute("update tipoxestado set id_tipoestado=%s ,estado=%s where id_tipoxestado=%s ",(result[0],tipoxestado.estado,id))
+            conn.commit()
+            conn.close()
+            return {"success": "tipoxestado creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()

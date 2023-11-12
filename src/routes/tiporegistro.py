@@ -26,3 +26,9 @@ def getTipoRegistro(id_tipo):
 def createTipoRegistro(tipo_registro:TipoRegistro):
       rpta=nuevo_tipoRegistro.createTipoRegistro(tipo_registro)
       return rpta
+
+@tipoRegistro.put('/tipo_registro/{id}')
+
+def createTipoRegistro(tipo_registro:TipoRegistro,id:int):
+      rpta=nuevo_tipoRegistro.updateTipoRegistro(tipo_registro,id)
+      return rpta

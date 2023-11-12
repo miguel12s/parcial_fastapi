@@ -43,7 +43,15 @@ class RegistroActividadController:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("""
-SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hora,ra.ubicacion_actividad FROM registro_actividad ra join tipo_registro_actividad tra on tra.id_tipo_actividad=ra.id_tipo_actividad
+SELECT 
+ra.id_registro_actividad
+,tra.tipo_actividad
+,concat(u.nombres,' ',u.apellidos) as nombre_completo
+,ra.fecha_hora
+,ra.ubicacion_actividad
+FROM registro_actividad ra 
+join tipo_registro_actividad tra on tra.id_tipo_actividad=ra.id_tipo_actividad 
+join usuarios u on u.id_usuario=ra.id_usuario
 """)
             result = cursor.fetchall()
             print(result)
@@ -53,10 +61,9 @@ SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hor
                 content = {
                     'id': data[0],
                     'tipo_actividad': data[1],
-                    'id_usuario':data[2],
-                    'fecha':data[3],
-                    'hora':data[4],
-                    'ubicacion_actividad':data[5]
+                    'nombre_completo':data[2],
+                    'fecha_hora':data[3],
+                    'ubicacion':data[4]
                    
 
                 }
@@ -71,6 +78,7 @@ SELECT ra.id_registro_actividad,tra.tipo_actividad,ra.id_usuario,ra.fecha,ra.hor
                     status_code=404, detail="facultadxprograma not found")
 
         except mysql.connector.Error as err:
+            print(err)
             conn.rollback()
         finally:
             conn.close()

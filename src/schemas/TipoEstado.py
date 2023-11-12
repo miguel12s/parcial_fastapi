@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class TipoEstado(BaseModel):
-    id:int
+    id:int=None
     tipoEstado:str

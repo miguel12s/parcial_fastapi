@@ -8,11 +8,11 @@ registro_actividad=APIRouter()
 nueva_registro_actividad=RegistroActividadController()
 
 
-@registro_actividad.get('/registro_actividad',response_model=List[RegistroActividad])
+@registro_actividad.get('/registro_actividad')
 
 def getRegistrosActividad():
     rpta=nueva_registro_actividad.getRegistrosActividad()
-    return rpta['resultado']
+    return rpta
 
 @registro_actividad.get('/registro_actividad/{id}',response_model=RegistroActividad)
 

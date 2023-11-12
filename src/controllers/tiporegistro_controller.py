@@ -72,7 +72,22 @@ class TipoRegistroController:
                 "INSERT INTO tipo_registro_actividad (tipo_actividad) VALUES (%s)", (tipoRegistro.tipoRegistro,))
             conn.commit()
             conn.close()
-            return {"resultado": "tipo registro  creado"}
+            return {"success": "tipo registro  creado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return ({"error": "el tipo registro  ya existe en el programa"})
+        finally:
+            conn.close()
+    def updateTipoRegistro(self, tipoRegistro: TipoRegistro,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "update tipo_registro_actividad set tipo_actividad=%s where id_tipo_actividad=%s", (tipoRegistro.tipoRegistro,id))
+            conn.commit()
+            conn.close()
+            return {"success": "tipo registro  creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()

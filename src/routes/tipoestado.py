@@ -27,4 +27,10 @@ def createTipoEstado(tipo_estado:TipoEstado):
       rpta=nuevo_tipoEstado.createTipoEstado(tipo_estado)
       return rpta
 
+@tipoEstado.put('/tipo_estado/{id}')
+
+def updateTipoEstadoTipoEstado(tipo_estado:TipoEstado,id:int):
+      rpta=nuevo_tipoEstado.updateTipoEstado(tipo_estado,id)
+      return rpta
+
 

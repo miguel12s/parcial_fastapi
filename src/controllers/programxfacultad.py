@@ -59,7 +59,7 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
              content={}
             json_data=jsonable_encoder(payload)
             if data:
-                return {"resultado":payload}
+                return {"resultado":json_data}
             else:
                 raise HTTPException(
                     status_code=404, detail="facultadxprograma not found")

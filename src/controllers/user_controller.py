@@ -150,7 +150,7 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
             if result:
                return {"resultado": json_data}
             else:
-                return {"resultado":payload}
+                return {"error":"no hay usuarios"}
                 
         except mysql.connector.Error as err:
             conn.rollback()
