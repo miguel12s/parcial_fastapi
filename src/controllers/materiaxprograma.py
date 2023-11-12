@@ -3,7 +3,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from schemas.FpxMateria import FpxMateria, createFpxMateria
+from schemas.FpxMateria import FpxMateria, createFpxMateria, updateFpxMateria
 from fastapi.encoders import jsonable_encoder
 
 
@@ -210,3 +210,26 @@ join materias m on m.id_materia=fpxm.id_materia where fpxm.id_fpxm=%s
             
         finally:
             conn.close()
+
+    def updateMateria(self,data:updateFpxMateria,id:int):
+        try:
+            print(data)
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("select id_materia from materias where materia=%s",(data.materia,))
+            id_materia=cursor.fetchone()[0]
+            cursor.execute("""update fpxmateria set id_materia=%s
+where id_fpxm=%s
+                           
+""",(id_materia,id,))
+            conn.commit()
+            conn.close()
+            return {"success":"ha sido actualizada la materia"}
+
+        except mysql.connector.Error as err:
+            conn.rollback()
+            return {"error":"ocurrio algun error"}
+            
+        finally:
+            conn.close()
+

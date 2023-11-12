@@ -10,3 +10,9 @@ class createFpxMateria(BaseModel):
     facultad:int
     programa:int
     materia:int
+
+class updateFpxMateria(BaseModel):
+    id_fpxm:int=0
+    facultad:str
+    programa:str
+    materia:str

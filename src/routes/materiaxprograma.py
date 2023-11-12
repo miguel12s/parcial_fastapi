@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.materiaxprograma import *
-from schemas.FpxMateria import FpxMateria,createFpxMateria
+from schemas.FpxMateria import FpxMateria,createFpxMateria, updateFpxMateria
 from controllers.materiaxprograma import *
 
 materiaxprograma=APIRouter()
@@ -46,6 +46,13 @@ def createMateria(materia:createFpxMateria):
 
 def getMateriaForId(id):
       rpta=nueva_materiaxprograma.getMateriaForId(id)
+      return rpta
+
+@materiaxprograma.put('/materia-pro-fac/{id}')
+
+def getMateriaForId(data:updateFpxMateria,id:int):
+      print(data)
+      rpta=nueva_materiaxprograma.updateMateria(data,id)
       return rpta
 
 
