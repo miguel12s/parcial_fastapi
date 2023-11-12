@@ -22,3 +22,9 @@ def materiag(id_materia:int):
 def materiaw(materia:Materia):
       return MateriaController.createMateria(materia)
 
+
+@materia.put('/materia/{id}')
+
+def updateMateria(materia:Materia,id:int):
+      return MateriaController.updateMateria(materia,id)
+

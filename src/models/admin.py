@@ -75,7 +75,7 @@ class ModelAdmin:
                 "INSERT INTO materias (materia) VALUES (%s)", (materia.materia,))
             conn.commit()
             conn.close()
-            return {"resultado": "materia  creada"}
+            return {"success": "materia  creada"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
@@ -158,5 +158,22 @@ where f.id_facultad=(select f2.id_facultad from facultades f2 where  f2.facultad
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
+        finally:
+            conn.close()
+    def updateMateria(materia:Materia,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "update materias set materia=%s  where id_materia=%s",(materia.materia,id))
+            conn.commit()
+        
+            return {"success":"la materia ha sido actualizada"}
+           
+
+        except mysql.connector.Error as err:
+            
+            conn.rollback()
+            return {"error":"la materia ya existe en el sistema"}
         finally:
             conn.close()

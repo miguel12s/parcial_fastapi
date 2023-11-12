@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.materiaxprograma import *
-from schemas.FpxMateria import FpxMateria
+from schemas.FpxMateria import FpxMateria,createFpxMateria
 from controllers.materiaxprograma import *
 
 materiaxprograma=APIRouter()
@@ -27,6 +27,25 @@ def getmatxpro(id_programa:str,id_facultad:str):
 
 def creatematxpro(fxp:FpxMateria):
       rpta=nueva_materiaxprograma.creatematxpro(fxp)
+      return rpta
+
+@materiaxprograma.get('/materia-pro-fac')
+
+def getMateria():
+      rpta=nueva_materiaxprograma.getMaterias()
+      return rpta
+
+
+@materiaxprograma.post('/materia-pro-fac')
+
+def createMateria(materia:createFpxMateria):
+      rpta=nueva_materiaxprograma.createMateria(materia)
+      return rpta
+
+@materiaxprograma.get('/materia-pro-fac/{id}')
+
+def getMateriaForId(id):
+      rpta=nueva_materiaxprograma.getMateriaForId(id)
       return rpta
 
 

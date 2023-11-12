@@ -8,12 +8,12 @@ rol=APIRouter()
 nuevo_rol=RolController()
 
 
-@rol.get('/roles',response_model=List[Rol])
+@rol.get('/roles')
 
 
 def rolesf():
       rpta=nuevo_rol.getRoles()
-      return rpta['resultado']
+      return rpta
 
 @rol.get('/roles/{id_rol}',response_model=Rol)
 
@@ -26,3 +26,10 @@ def rolesg(id_rol):
 def createRoles(rol:Rol):
       rpta=nuevo_rol.createRol(rol)
       return rpta
+
+@rol.put('/roles/{id}')
+
+def updateRoles(rol:Rol,id:int):
+      rpta=nuevo_rol.updateRol(rol,id)
+      return rpta
+

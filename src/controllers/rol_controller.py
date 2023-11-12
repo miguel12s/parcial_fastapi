@@ -70,10 +70,25 @@ class RolController:
                 "INSERT INTO roles (rol) VALUES (%s)", (rol.rol,))
             conn.commit()
             conn.close()
-            return {"resultado": "rol  creado"}
+            return {"success": "rol  creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
             return ({"error": "el rol  ya existe en el programa"})
+        finally:
+            conn.close()
+    def updateRol(self,rol:Rol,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "update roles set rol=%s where id_rol=%s",(rol.rol,id))
+            conn.commit()
+            conn.close()
+            return {"success": "el rol ha sido actualizado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return {"error": "el rol  ya existe en el programa"}
         finally:
             conn.close()

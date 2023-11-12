@@ -30,4 +30,13 @@ class MateriaController:
            return rpta       
         except Exception as e :
             print(e)
+    
+    def updateMateria(materia:Materia,id:int):
+        try:
+           rpta= ModelAdmin.updateMateria(materia,id)
+           return rpta       
+        except Exception as e :
+            print(e)
+    
+
 

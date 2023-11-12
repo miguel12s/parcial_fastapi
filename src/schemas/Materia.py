@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 class Materia(BaseModel):
-    id:int
+    id:int=0
     materia:str
 

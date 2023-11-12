@@ -3,7 +3,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from schemas.FpxMateria import FpxMateria
+from schemas.FpxMateria import FpxMateria, createFpxMateria
 from fastapi.encoders import jsonable_encoder
 
 
@@ -77,7 +77,7 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
             conn.rollback()
         finally:
             conn.close()
-    def creatematxpro(self,fpxmateria:FpxMateria):
+    def creatematxpro(self,fpxmateria:createFpxMateria):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -108,5 +108,105 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
             print(err)
             conn.rollback()
             return ({"error": "programaxfacultad  ya existe en el programa"})
+        finally:
+            conn.close()
+    def getMaterias(self):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+SELECT fpxm.id_fpxm,f.facultad,p.programa,m.materia FROM `fpxmateria` fpxm
+join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp
+join facultades f on f.id_facultad=fxp.id_facultad
+join programas p on p.id_programa=fxp.id_programa
+join materias m on m.id_materia=fpxm.id_materia
+""")
+            result = cursor.fetchall()
+            print(result)
+            payload = []
+            content = {}
+            for data in result:
+                content = {
+                    'id': data[0],
+                    'programa': data[1],
+                    'facultad':data[2],
+                    'materia':data[3]
+                   
+
+                }
+                payload.append(content)
+                content = {}
+            json_data = jsonable_encoder(payload)
+            print(json_data)
+            if result:
+                return {"resultado": json_data}
+            else:
+                raise HTTPException(
+                    status_code=404, detail="facultadxprogramaxmateria not found")
+
+        except mysql.connector.Error as err:
+            conn.rollback()
+            
+        finally:
+            conn.close()
+
+
+    def createMateria(self,materia:createFpxMateria):
+        try:
+            print(materia)
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+select fxp.id_fxp from facultadxprograma fxp WHERE fxp.id_facultad=%s and fxp.id_programa=%s  
+
+
+
+""",(materia.facultad,materia.programa))
+            result=cursor.fetchone()
+            print(result)
+            cursor.execute(
+                "INSERT INTO fpxmateria (id_fxp, id_materia) VALUES (%s,%s)", (result[0],materia.materia,))
+            conn.commit()
+            conn.close()
+            return {"success": "programaxfacultadxmateria creado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return ({"error": "programaxfacultadxmateria  ya existe en el programa"})
+        finally:
+            conn.close()
+
+    def getMateriaForId(self,id:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""SELECT fpxm.id_fpxm,f.facultad,p.programa,m.materia FROM `fpxmateria` fpxm
+join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp
+join facultades f on f.id_facultad=fxp.id_facultad
+join programas p on p.id_programa=fxp.id_programa
+join materias m on m.id_materia=fpxm.id_materia where fpxm.id_fpxm=%s
+                           
+""",(id,))
+            data = cursor.fetchone()
+            
+           
+            content = {
+                    'id': data[0],
+                    'programa': data[1],
+                    'facultad':data[2],
+                    'materia':data[3]
+                   
+
+                }
+            print(content)
+            if data:
+                return content
+            else:
+                raise HTTPException(
+                    status_code=404, detail="facultadxprogramaxmateria not found")
+
+        except mysql.connector.Error as err:
+            conn.rollback()
+            
         finally:
             conn.close()
