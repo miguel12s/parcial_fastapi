@@ -108,3 +108,30 @@ SELECT txe.id_tipoxestado,te.tipo_estado,txe.estado FROM tipoxestado txe join ti
             return ({"error": "tipoxestado  ya existe en el programa"})
         finally:
             conn.close()
+    def getTipoxEstadosForUser(self):
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+SELECT txe.id_tipoxestado,te.tipo_estado,txe.estado FROM tipoxestado txe join tipoestado te on txe.id_tipoestado=te.id_tipoestado  where txe.id_tipoestado=4
+""")
+            result = cursor.fetchall()
+            print(result)
+            payload = []
+            content = {}
+            for data in result:
+                content = {
+                    'id': data[0],
+                    'tipoxestado': data[1],
+                    'estado':data[2]
+                   
+
+                }
+                payload.append(content)
+                content = {}
+            json_data = jsonable_encoder(payload)
+            print(json_data)
+            if result:
+                return {"resultado": json_data}
+            else:
+                raise HTTPException(
+                    status_code=404, detail="tipoxestado not found")

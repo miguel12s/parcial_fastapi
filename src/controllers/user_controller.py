@@ -69,7 +69,7 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
 
 
 
-            return {"resultado": "Usuario creado"}
+            return {"success": "Usuario creado"}
         except mysql.connector.Error as err:
             print(err)
             conn.rollback()
@@ -83,9 +83,8 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
             conn = get_db_connection()
             cursor = conn.cursor()
             # select u.id_usuario,u.nombres,u.apellidos,td.tipo_documento,f.facultad, u.numero_documento,u.celular,u.foto,u.correo,u.contraseña from  usuarios u join tipos_documento td on u.id_tipo_documento=td.id_tipo_documento   join facultades f on f.id_facultad=fxp.id_facultad  join facultadxprograma fxp on fxp.id_facultad=7 join fpxusuario  fpx on fpx.id_usuario=u.id_usuario    WHERE u.id_usuario=11
-            sql="SELECT  u.id_usuario,u.nombres,u.apellidos,t.tipo_documento,  u.numero_documento,f.facultad,p.programa,u.celular,u.foto,u.correo,u.contraseña FROM `usuarios` u  join tipos_documento t on u.id_tipo_documento=t.id_tipo_documento join fpxusuario facusu on facusu.id_usuario=u.id_usuario     join facultadxprograma fxp on fxp.id_fxp=facusu.id_fxp join facultades f on f.id_facultad=fxp.id_facultad join programas p on p.id_programa=fxp.id_programa   WHERE u.id_usuario=%s"
+            sql="SELECT  u.id_usuario,u.nombres,u.apellidos,t.tipo_documento,  u.numero_documento,f.facultad,p.programa,u.celular,u.foto,u.correo,u.contraseña,txe.estado FROM `usuarios` u  join tipos_documento t on u.id_tipo_documento=t.id_tipo_documento join fpxusuario facusu on facusu.id_usuario=u.id_usuario     join facultadxprograma fxp on fxp.id_fxp=facusu.id_fxp join facultades f on f.id_facultad=fxp.id_facultad join programas p on p.id_programa=fxp.id_programa join tipoxestado txe on txe.id_tipoxestado=u.id_estado   WHERE u.id_usuario=%s"
             cursor.execute(sql, (user_id,))
-            print(sql)
             result = cursor.fetchone()
             print(result)
             payload = []
@@ -93,8 +92,8 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
             
             content={
                  'id':result[0],
-                    'nombre':result[1],
-                    'apellido':result[2],
+                    'nombres':result[1],
+                    'apellidos':result[2],
                     'tipo_documento':result[3],
                     'numero_documento':result[4],
                     'facultad':result[5],
@@ -103,13 +102,13 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
                     'foto':result[8],
                     'correo':result[9],
                     'contraseña':result[10],
+                    'estado':result[11]
                     # 'id_estado':result[10],
                     # 'id_rol':result[11]  
             }
             payload.append(content)
             
             json_data = jsonable_encoder(content)  
-            print(json_data)          
             if result:
                return  json_data
             else:

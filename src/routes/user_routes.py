@@ -34,10 +34,16 @@ async def get_users():
 #     return rpta
 
 
-@router.put('/user/{id_user}')
+@router.get('/{id_user}')
+
+async def updateUserf(id_user):
+    rpta=nuevo_usuario.get_user(id_user)
+    return rpta
+
+@router.put('/{id_user}')
 
 async def updateUser(user:User,id_user):
-    rpta=nuevo_usuario.update_user(user,id_user)
+    rpta=nuevo_usuario.update_user(id_user)
     return rpta
 
 @router.post('/multiple-users')

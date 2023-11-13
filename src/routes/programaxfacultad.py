@@ -33,8 +33,15 @@ def updateFacultadxPrograma(fxp:ProgramxFacultad,id_fxp:int):
       return rpta
 @programaxfacultad.get('/facultadxprograma/{id_facultad}')
 
-def getFacultadForPrograma(id_facultad):
+def getFacultadForPrograma(id_facultad:int):
        rpta=nueva_programaxfacultad.getFacultadxPrograma(id_facultad)
+       return rpta
+
+@programaxfacultad.get('/facultad-programa/{facultad}')
+
+def getFacultadForProgramsa(facultad:str):
+       print(facultad)
+       rpta=nueva_programaxfacultad.getProgramas(facultad)
        return rpta
 
 

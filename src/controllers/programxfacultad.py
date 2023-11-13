@@ -151,3 +151,39 @@ JOIN
             conn.rollback()
         finally:
             conn.close()
+    def getProgramas(self,facultad:str):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            facultad.strip()
+            new_faculty=facultad.strip()
+            cursor.execute("""
+SELECT p.programa FROM `facultadxprograma` fxp
+join programas p on p.id_programa=fxp.id_programa
+
+WHERE fxp.id_facultad=(select id_facultad from facultades where facultad=%s) 
+""",(new_faculty,))
+            result = cursor.fetchall()
+            print(result)
+            payload = []
+            content = {}
+            for data in result:
+                content = {
+                    'programa': data[0],
+                    
+
+                }
+                payload.append(content)
+                content = {}
+            json_data = jsonable_encoder(payload)
+            print(json_data)
+            if result:
+                return {"resultado": json_data}
+            else:
+                raise HTTPException(
+                    status_code=404, detail="facultadxprograma not found")
+
+        except mysql.connector.Error as err:
+            conn.rollback()
+        finally:
+            conn.close()

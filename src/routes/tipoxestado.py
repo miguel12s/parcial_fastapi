@@ -13,6 +13,14 @@ def getTipoxEstado():
     rpta=nuevo_tipoxestado.getTipoxEstados()
     return rpta['resultado']
 
+
+
+@tipoxestado.get('/tipoxestado-user',response_model=List[TipoxEstado])
+
+def getTipoxEstadoForUser():
+    rpta=nuevo_tipoxestado.getTipoxEstadosForUser()
+    return rpta['resultado']
+
 @tipoxestado.get('/tipoxestado/{id}',response_model=TipoxEstado)
 
 def getTipoxEstado(id):
