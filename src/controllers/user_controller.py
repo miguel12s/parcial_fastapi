@@ -2,7 +2,7 @@ import io
 import mysql.connector
 from fastapi import HTTPException, UploadFile
 from config.db_config import get_db_connection
-from schemas.user_model import User
+from schemas.user_model import User, updateUser
 from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
 from models.admin import ModelAdmin
@@ -169,47 +169,45 @@ where p.id_programa=%s and f.id_facultad=%s """,(user.id_programa,user.id_facult
             conn.rollback()
         finally:
             conn.close()
-    def update_user(self,user:User,id_user:int):
+    def update_user(self,user:updateUser,id_user:int):
         try:
-            
+            print(user)
             conn = get_db_connection()
             cursor = conn.cursor()
+
+            
             cursor.execute("""SELECT 
-          t.id_tipo_documento,
-         f.id_facultad
+          td.id_tipo_documento
+        ,f.id_facultad
+        ,p.id_programa
+        ,txe.id_tipoxestado
          FROM 
-        tipos_documento AS t 
-JOIN 
-    facultades AS f ON f.facultad =%s
-where t.tipo_documento=%s;
+        usuarios u 
+JOIN facultades AS f ON f.facultad =%s
+join programas p on p.programa=%s
+join tipos_documento td on td.tipo_documento=%s
+join tipoxestado txe on txe.estado=%s
 
 
-""",(user.facultad,user.tipo_documento,))
+""",(user.facultad,user.programa,user.tipo_documento,user.estado))
             result=cursor.fetchone()
-            print(result)
-
-
-            cursor.execute("""
-update usuarios set id_rol=%s, id_estado=%s, nombres=%s, apellidos=%s, id_tipo_documento=%s, numero_documento=%s, celular=%s, id_facultad=%s, foto=%s, correo=%s, contraseña=%s where id_usuario=%s
-
-
-
-
-""",(user.id_rol,4,user.nombre,user.apellido,result[0],user.numero_documento,user.celular,result[1],user.foto,user.correo,user.contraseña,id_user,))
+            id_fxp=ModelAdmin.obtenerid(result)
+            ModelAdmin.updateUser(user,result,id_user)
+            ModelAdmin.updateFacultad(id_fxp,id_user)
+            
             
 
-            conn.commit()
-            cursor.execute('update camposxusuario set dato=%s where id_usuario=%s',(user.facultad,id_user))
-            conn.commit()
-            conn.close()
+#             conn.commit()
+           
 
 
+            
 
-
-            return {"resultado": "Usuario actualizado"}
+            return {"success": "Usuario actualizado"}
         except mysql.connector.Error as err:
-            conn.rollback()
             print(err)
+
+            conn.rollback()
         finally:
             conn.close()
     async def insertMultipleUsers(self, file: UploadFile):

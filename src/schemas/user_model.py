@@ -14,4 +14,16 @@ class User(BaseModel):
     correo:EmailStr
     contraseña:str
 
+class updateUser(BaseModel):
+    id: int=None
+    estado:str
+    nombres: str
+    apellidos: str
+    tipo_documento:str
+    numero_documento:int
+    celular: int
+    facultad:str
+    programa:str
+    correo:EmailStr
+
 

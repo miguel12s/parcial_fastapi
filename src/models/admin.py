@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from schemas.changePassword import ChangePassword
+from schemas.user_model import updateUser
 from utils.utils import Hasher
 from schemas.Materia import Materia
 from config.db_config import get_db_connection
@@ -177,3 +178,36 @@ where f.id_facultad=(select f2.id_facultad from facultades f2 where  f2.facultad
             return {"error":"la materia ya existe en el sistema"}
         finally:
             conn.close()
+    def obtenerid(result):
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            print(result)
+            sql=f"""select fxp.id_fxp from facultadxprograma fxp where fxp.id_facultad={result[1]} and fxp.id_programa={result[2]}"""
+            cursor.execute(sql)
+            print(sql)
+            # 
+            id_fxp=cursor.fetchone()[0]
+            return id_fxp
+    def updateUser(user:updateUser,result,id_user:int):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+update usuarios set id_estado=%s, nombres=%s, apellidos=%s, id_tipo_documento=%s, numero_documento=%s, celular=%s, correo=%s where id_usuario=%s
+
+
+
+
+""",(result[3],user.nombres,user.apellidos,result[0],user.numero_documento,user.celular,user.correo,id_user))
+        conn.commit()
+        conn.close()
+    def updateFacultad(id_fxp,id_user):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+update fpxusuario set id_fxp=%s where id_usuario=%s
+
+
+
+""",(id_fxp,id_user))
+        conn.commit()
+        conn.close()

@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Request
 from controllers.user_controller import *
-from schemas.user_model import User
+from schemas.user_model import User,updateUser
 from utils.Security import Security
 router = APIRouter(prefix="/user")
 
@@ -42,8 +42,8 @@ async def updateUserf(id_user):
 
 @router.put('/{id_user}')
 
-async def updateUser(user:User,id_user):
-    rpta=nuevo_usuario.update_user(id_user)
+async def updatefUser(user:updateUser,id_user):
+    rpta=nuevo_usuario.update_user(user,id_user)
     return rpta
 
 @router.post('/multiple-users')
