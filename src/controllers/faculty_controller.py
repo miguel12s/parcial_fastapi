@@ -123,4 +123,32 @@ class FacultyController:
             return {"error":"la facultad se encuentra registrada en el programa"}
         finally:
             conn.close()
+    def getFacultadUserDocente(self,id_usuario:int):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""SELECT DISTINCT f.id_facultad, f.facultad from fpxusuario fu join facultadxprograma fxp on fxp.id_fxp=fu.id_fxp join facultades f on f.id_facultad=fxp.id_facultad where fu.id_usuario=%s """,(id_usuario,))
+            result = cursor.fetchall()
+            payload = []
+            content = {}
+            print(result)
+            for data in result:
+                content = {
+                    'id': data[0],
+                    'facultad': data[1],
 
+                }
+                payload.append(content)
+                content = {}
+            json_data = jsonable_encoder(payload)
+            print(json_data)
+            if result:
+                return {"resultado": json_data}
+            else:
+                raise HTTPException(
+                    status_code=404, detail="Programs not found")
+
+        except mysql.connector.Error as err:
+            conn.rollback()
+        finally:
+            conn.close()

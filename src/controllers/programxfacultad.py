@@ -44,7 +44,7 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                """SELECT id_fxp,p.programa,f.facultad FROM facultadxprograma fxp join programas p on fxp.id_programa=p.id_programa join facultades f  on f.id_facultad=fxp.id_facultad where fxp.id_facultad=%s
+                """SELECT id_fxp,p.programa,f.facultad,p.id_programa FROM facultadxprograma fxp join programas p on fxp.id_programa=p.id_programa join facultades f  on f.id_facultad=fxp.id_facultad where fxp.id_facultad=%s
 """, (id_facultad,))
             result = cursor.fetchall()
             payload=[]
@@ -52,12 +52,15 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
              content = {
                     'id': data[0],
                     'programa': data[1],
+                    'id_programa':data[3]
 
 
                 }
              payload.append(content)
              content={}
             json_data=jsonable_encoder(payload)
+            print(json_data)
+
             if data:
                 return {"resultado":json_data}
             else:

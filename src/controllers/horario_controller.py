@@ -121,7 +121,6 @@ where txe.id_tipoxestado=6 and ht.cupos>0
 
             conn = get_db_connection()
             cursor = conn.cursor()
-
             cursor.execute("""
 select fpxm.id_fpxm from fpxmateria fpxm join facultadxprograma fxp on fxp.id_fxp=fpxm.id_fxp 
 where fpxm.id_materia=%s and fxp.id_facultad=%s and fxp.id_programa=%s

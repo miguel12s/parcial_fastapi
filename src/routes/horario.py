@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request,UploadFile
 from typing import Any, List
 from controllers.horario_controller import *
-from schemas.Horario import Horario,AgendarTutoria
+from schemas.Horario import Horario,AgendarTutoria,Horariof
 from utils.Security import Security
 horario=APIRouter()
 
@@ -14,6 +14,13 @@ async def createHorario(horario:Horario,request:Request):
         headers=request.headers
         payload=Security.verify_token(headers)
         id_usuario=payload['id_usuario']
+        rpta=nueva_horario.createHorario(horario,id_usuario)  
+        return rpta
+
+@horario.post('/horario-admin/{id_usuario}')
+
+async def createHorario(horario:Horariof,id_usuario):
+        print(horario)
         rpta=nueva_horario.createHorario(horario,id_usuario)  
         return rpta
 

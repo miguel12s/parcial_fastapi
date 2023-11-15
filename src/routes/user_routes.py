@@ -27,6 +27,12 @@ async def get_user(request:Request):
 async def get_users():
     rpta = nuevo_usuario.get_users()
     return rpta['resultado']
+
+
+@router.get("/get_docentes")
+async def get_users():
+    rpta = nuevo_usuario.get_docentes()
+    return rpta['resultado']
 # @router.delete("/user/{id}")
 
 # async def deleteUser(id):
@@ -45,6 +51,8 @@ async def updateUserf(id_user):
 async def updatefUser(user:updateUser,id_user):
     rpta=nuevo_usuario.update_user(user,id_user)
     return rpta
+
+
 
 @router.post('/multiple-users')
 async def createMultipleUsers(formdata:UploadFile):

@@ -66,7 +66,6 @@ SELECT fp.id_fxp,p.programa, f.facultad FROM `facultadxprograma` fp join faculta
             json_data = jsonable_encoder(payload)
             print(result)            
             if result:
-                print('enbtrs ')
                 return {"resultado": json_data}
             else:
                 raise HTTPException(

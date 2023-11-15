@@ -244,6 +244,46 @@ join tipoxestado txe on txe.estado=%s
      except Exception as e: 
         print(e)
         raise HTTPException(status_code=400, detail="Error al procesar el archivo")
+    def get_docentes(self):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT distinct  u.id_usuario,u.nombres,u.apellidos,t.tipo_documento,  u.numero_documento,f.facultad,p.programa,u.celular,u.foto,u.correo,u.contraseña FROM `usuarios` u  join tipos_documento t on u.id_tipo_documento=t.id_tipo_documento join fpxusuario facusu on facusu.id_usuario=u.id_usuario     join facultadxprograma fxp on fxp.id_fxp=facusu.id_fxp join facultades f on f.id_facultad=fxp.id_facultad join programas p on p.id_programa=fxp.id_programa where u.id_rol=2 and u.id_estado=4 group by u.id_usuario ")
+            
+            result = cursor.fetchall()
+            print(result)
+            payload = []
+            content = {} 
+            for data in result:
+                content={
+                    'id':data[0],
+                    'nombre':data[1],
+                    'apellido':data[2],
+                    'tipo_documento':data[3],
+                    'numero_documento':data[4],
+                    'facultad':data[5],
+                    'programa':data[6],
+                    'celular':data[7],
+                    'foto':data[8],
+                    'correo':data[9],
+                    'contraseña':data[10],
+                    
+                }
+                payload.append(content)
+                content = {}
+            conn.close()
+            json_data = jsonable_encoder(payload)        
+            if result:
+               return {"resultado": json_data}
+            else:
+                return {"error":"no hay usuarios"}
+                
+        except mysql.connector.Error as err:
+            conn.rollback()
+
+        finally:
+            conn.close()
+
     
 
     

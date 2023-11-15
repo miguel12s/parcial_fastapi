@@ -42,3 +42,9 @@ async def get_faculty_user(request:Request):
     print(rpta)
     return rpta
 
+@facultad.get('/facultad-user-docente/{id_usuario}')
+
+def facultadUserDocente(id_usuario):
+   rpta=nueva_facultad.getFacultadUserDocente(id_usuario)
+   return rpta
+
