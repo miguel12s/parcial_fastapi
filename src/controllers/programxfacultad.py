@@ -1,7 +1,7 @@
 import mysql.connector
 from fastapi import HTTPException
 from config.db_config import get_db_connection
-from schemas.ProgramxFacultad import ProgramxFacultad
+from schemas.ProgramxFacultad import FacultadxUsuario, ProgramxFacultad
 from fastapi.encoders import jsonable_encoder
 
 
@@ -188,5 +188,30 @@ WHERE fxp.id_facultad=(select id_facultad from facultades where facultad=%s)
 
         except mysql.connector.Error as err:
             conn.rollback()
+        finally:
+            conn.close()
+    def createFacultadxUsuario(self,facultad:FacultadxUsuario):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+select id_fxp from facultadxprograma fxp where fxp.id_facultad=(select id_facultad from facultades f  where f.facultad=%s) and fxp.id_programa=(select id_programa from programas p where p.programa=%s)
+
+
+
+
+
+""",(facultad.facultad,facultad.programa))
+            result=cursor.fetchone()[0]
+            print(result)
+            cursor.execute(
+                "INSERT INTO `fpxusuario`( `id_fxp`, `id_usuario`) VALUES (%s,%s)", (result,facultad.id_usuario,))
+            conn.commit()
+            conn.close()
+            return {"success": "facultadxusuario creado"}
+        except mysql.connector.Error as err:
+            print(err)
+            conn.rollback()
+            return ({"error": "programaxfacultad  ya existe en el programa"})
         finally:
             conn.close()

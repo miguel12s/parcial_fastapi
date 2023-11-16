@@ -53,6 +53,12 @@ async def deleteHorario(id,request:Request):
         rpta=nueva_horario.deleteHorario(id,id_usuario)
         return rpta
 
+@horario.delete('/horario/eliminar-tutoria/{id_tutoria}/{id_usuario}')
+
+async def deleteHorario(id_tutoria,id_usuario):
+        rpta=nueva_horario.deleteHorarioAdmin(id_tutoria,id_usuario)
+        return rpta
+
 @horario.get('/horario-usuario')
 
 async def horarioUsuario(request:Request):
@@ -140,6 +146,15 @@ def cancelarTutoria(request:Request,id_tutoria:int):
 
     
 
+@horario.get('/horario-terminado')
+
+def obtenerTutoriaFinalizadass():
+    try:
+        rpta=nueva_horario.obtenerTutoriaFinalizadass()
+        return rpta
+    except Exception as e :
+        print(e)
+        raise HTTPException(status_code=400,detail=e) 
                
         
 

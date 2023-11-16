@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Depends, Request
 from typing import List
 from controllers.faculty_controller import *
-from schemas.Faculty import Faculty
+from schemas.Faculty import Faculty, FacultyxUser
 from utils.Security import Security
 
 facultad=APIRouter()
@@ -48,3 +48,31 @@ def facultadUserDocente(id_usuario):
    rpta=nueva_facultad.getFacultadUserDocente(id_usuario)
    return rpta
 
+@facultad.get('/facultad-users')
+
+def getFacultadUser():
+   rpta=nueva_facultad.getFacultadUser()
+   return rpta
+
+@facultad.get('/facultadxusuario/{id_usuario}')
+
+def getFacultadUser(id_usuario):
+   rpta=nueva_facultad.getFacultadxUsuario(id_usuario)
+   return rpta
+
+
+@facultad.get('/facultadxusuarios/{id_fpxusuario}')
+
+
+def getFacultadxUsuario(id_fpxusuario:int):
+   rpta=nueva_facultad.getFacultadxUsuarioForId(id_fpxusuario)
+   return rpta
+
+
+@facultad.put('/facultadxusuarios/{id_fpxusuario}')
+
+
+def getFacultadxUsuario(id_fpxusuario:int,data:FacultyxUser):
+   print(data)
+   rpta=nueva_facultad.updateFacultadxUsuarioForId(id_fpxusuario,data)
+   return rpta

@@ -216,6 +216,25 @@ WHERE id_tutoria = %s
                 conn.rollback()
             finally:
                 conn.close()
+    def deleteHorarioAdmin(self,id:int,id_user:int):
+            try:
+                fecha_actual=datetime.datetime.now()
+                fecha_sin_microsegundos=fecha_actual.replace(microsecond=0)
+
+                fecha_formateada = fecha_sin_microsegundos.strftime("%Y-%m-%d %H:%M:%S")
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute("update horario_tutorias ht set ht.id_estado_tutoria=%s  where id_tutoria=%s",(8,id,))
+                conn.commit()
+                cursor.execute('INSERT INTO `registro_actividad`( `id_tipo_actividad`, `id_usuario`, `fecha_hora`, `ubicacion_actividad`) VALUES (%s,%s,%s,%s) ',(2,id_user,fecha_formateada,'eliminar tutoria'))
+                conn.commit()
+                conn.close()
+                return {"success":"horario deshabilitado"}
+            except mysql.connector.Error as err:
+                print(err)
+                conn.rollback()
+            finally:
+                conn.close()
     def getHorarioForIdUsuario(self,id:int):
         try:
             conn=get_db_connection()
@@ -322,6 +341,15 @@ where txe.id_tipoxestado=6 and id_usuario=%s;""",(id,))
         except Exception as e: 
             print(e)
             raise HTTPException(status_code=400, detail=e)
+    
+    def obtenerTutoriaFinalizadass(self):
+        try:
+          rpta=ModelUser.obtenerTutoriaFinalizadass()
+          return rpta
+        except Exception as e: 
+            print(e)
+            raise HTTPException(status_code=400, detail=e)
+    
     
                 # def createHorario(self,horario:Horario):
     #     try:

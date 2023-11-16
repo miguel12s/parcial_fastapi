@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from controllers.programxfacultad import *
-from schemas.ProgramxFacultad import ProgramxFacultad
+from schemas.ProgramxFacultad import FacultadxUsuario, ProgramxFacultad
 
 programaxfacultad=APIRouter()
 
@@ -43,6 +43,14 @@ def getFacultadForProgramsa(facultad:str):
        print(facultad)
        rpta=nueva_programaxfacultad.getProgramas(facultad)
        return rpta
+
+
+@programaxfacultad.post('/facultad-usuario')
+
+def createFacultadxPrograma(facultad:FacultadxUsuario):
+      print(facultad)
+      rpta=nueva_programaxfacultad.createFacultadxUsuario(facultad)
+      return rpta
 
 
 
