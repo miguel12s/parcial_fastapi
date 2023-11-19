@@ -131,18 +131,7 @@ where fpxm.id_materia=%s and fxp.id_facultad=%s and fxp.id_programa=%s
             existTutoria=ModelDocente.verify_hour(horario.hora_inicial,horario.hora_final,horario.fecha,id_usuario)
             if(existTutoria==0):
 
-                cursor.execute("""
-        INSERT INTO horario_tutorias (id_fpxm, id_salon, id_usuario, id_estado_tutoria, cupos, tema, fecha, hora_inicial, hora_final)
-                VALUES (%s,%s,%s,%s,%s,%s,%s, %s,%s)
-
-                            
-
-
-    """,(id_fpxm, horario.id_salon,id_usuario,6,horario.cupos,horario.tema,horario.fecha,horario.hora_inicial,horario.hora_final))
-                conn.commit()
-
-
-                conn.close()
+                ModelDocente.createHorario( horario,id_usuario,id_fpxm)
                 return {"success":success}
             else:
                 return {"error":"el horario ya existe"}

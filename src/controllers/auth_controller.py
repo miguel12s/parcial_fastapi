@@ -7,38 +7,36 @@ from fastapi.encoders import jsonable_encoder
 from utils.utils import Hasher
 from utils.Security import Security
 from utils.utils import Hasher
-
+from models.auth import ModelAuth
 class AuthController:
         
         def login(self,credentials:LoginRequest):
 
             try:
-                conn=get_db_connection()
-                cursor=conn.cursor()
-
-                cursor.execute("select contraseña from usuarios where correo=%s",(credentials.email,))
-                password_hashed_db=cursor.fetchone()[0]
+                password_hashed_db=ModelAuth.get_password_hash(credentials)
+                if password_hashed_db==None:
+                    return {"errorUser":"Usuario no encontrado"}
                 hash_verificated=Hasher.verify_password(credentials.password,password_hashed_db)
                 if(hash_verificated):
-                    cursor.execute("select id_usuario,id_rol,id_estado from usuarios where correo=%s and contraseña=%s",(credentials.email,password_hashed_db))
-                    data=cursor.fetchone()
-                    
+                    data=ModelAuth.getUserAuthenticated(credentials,password_hashed_db)
                     if data:
                            json_data=jsonable_encoder(Security.generateToken(data[0]))
                            print(json_data)
                            return {"token":json_data,"id_rol":data[1],"id_estado":data[2],}  
                     else:
-                        raise HTTPException(status_code=404, detail="User not found") 
-                  
+                        return {"error":"correo o contraseña incorrecta"}
+
+                       # raise HTTPException(status_code=404, detail="User not found") 
                 else:
-                 raise HTTPException(status_code=404, detail="User not found") 
+                    return {"error":"correo o contraseña incorrecta"}
+                #    raise HTTPException(status_code=404, detail="User not found") 
+               
 
  
             except mysql.connector.Error as err:
-                conn.rollback()
+                
                 return {"error":err}
-            finally:
-             conn.close()
+            
         def changePassword(self,email:str):
             exist=ModelAuth.existEmail(email)
             if(exist[0]==1):
